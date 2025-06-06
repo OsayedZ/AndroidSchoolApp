@@ -3,8 +3,6 @@ package com.example.androidschoolapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +13,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -23,13 +23,14 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout emailInputLayout, passwordInputLayout;
     private TextInputEditText emailInput, passwordInput;
     private MaterialButton loginButton;
+    private Chip studentChip, teacherChip, adminChip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.login_root), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -46,11 +47,16 @@ public class LoginActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.email_input);
         passwordInput = findViewById(R.id.password_input);
         loginButton = findViewById(R.id.login_button);
+        studentChip = findViewById(R.id.student_chip);
+        teacherChip = findViewById(R.id.teacher_chip);
+        adminChip = findViewById(R.id.admin_chip);
     }
 
     private void setupClickListeners() {
         loginButton.setOnClickListener(v -> attemptLogin());
-
+        studentChip.setOnClickListener(v-> login("student@school.com", "student123"));
+        teacherChip.setOnClickListener(v-> login("teacher@school.com", "teacher123"));
+        adminChip.setOnClickListener(v-> login("registrar@school.com", "registrar123"));
     }
 
     private void attemptLogin() {
@@ -96,37 +102,43 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setEnabled(false);
         loginButton.setText("Signing in...");
 
-        // TODO: Replace with actual authentication logic
-        simulateLogin(email, password);
+        login(email, password);
     }
 
-    private void simulateLogin(String email, String password) {
-        // Simulate network delay
-        loginButton.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Demo credentials (replace with actual authentication)
-                if (isValidCredentials(email, password)) {
-                    // Login successful
-                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    
-                    // Navigate to MainActivity
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    // Login failed
-                    Toast.makeText(LoginActivity.this, "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show();
-                    resetLoginButton();
-                }
-            }
-        }, 1500);
+    private Class getClassForRole(String email) {
+        switch(email)
+        {
+            default:
+            case "student@school.com":
+                return StudentDashboardActivity.class;
+            case "teacher@school.com":
+                return TeacherDashboardActivity.class;
+            case "registrar@school.com":
+                return RegistrarDashboardActivity.class;
+        }
+    }
+    private void login(String email, String password) {
+        // TODO: Replace with actual authentication logic
+
+        if (isValidCredentials(email, password)) {
+            // Login successful
+            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, getClassForRole(email));
+            intent.putExtra("USER_EMAIL", email);
+            startActivity(intent);
+
+            finish();
+        } else {
+            // Login failed
+            Toast.makeText(LoginActivity.this, "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show();
+            resetLoginButton();
+        }
     }
 
     private boolean isValidCredentials(String email, String password) {
-         return (email.equals("student@school.com") && password.equals("student123")) ||
-               (email.equals("teacher@school.com") && password.equals("teacher123")) ||
-               (email.equals("admin@school.com") && password.equals("admin123"));
+        return (email.equals("student@school.com") && password.equals("student123")) ||
+                (email.equals("teacher@school.com") && password.equals("teacher123")) ||
+                (email.equals("registrar@school.com") && password.equals("registrar123"));
     }
 
     private void resetLoginButton() {

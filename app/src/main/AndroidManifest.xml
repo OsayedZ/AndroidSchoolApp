@@ -22,12 +22,47 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <!-- Main Activity - After Login -->
+          <!-- Main Activity - After Login -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
             
+        <!-- Student Activities -->
+        <activity
+            android:name=".StudentDashboardActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name=".StudentTasksActivity"
+            android:exported="false"
+            android:parentActivityName=".StudentDashboardActivity" />
+            
+        <activity
+            android:name=".StudentScheduleActivity"
+            android:exported="false"
+            android:parentActivityName=".StudentDashboardActivity" />
+            
+        <activity
+            android:name=".StudentGradesActivity"
+            android:exported="false"
+            android:parentActivityName=".StudentDashboardActivity" />
+              <activity
+            android:name=".StudentSubmissionsActivity"
+            android:exported="false"
+            android:parentActivityName=".StudentDashboardActivity" />
+            
+        <!-- Teacher Activities -->
+        <activity
+            android:name=".TeacherDashboardActivity"
+            android:exported="false" />
+
+            
+        <!-- Registrar Activities -->
+        <activity
+            android:name=".RegistrarDashboardActivity"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>

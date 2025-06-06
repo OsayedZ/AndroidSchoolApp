@@ -1,45 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@color/background_light">
 
-    <LinearLayout
-        android:id="@+id/login_root"
+    <!-- Top Wave Shape -->
+    <View
+        android:id="@+id/top_wave"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="32dp"
-        android:gravity="center">
+        android:layout_height="180dp"
+        android:background="@color/primary_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Header Section -->
-        <LinearLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/login_root"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="48dp">
+            android:layout_height="wrap_content">
 
             <!-- School Logo -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginBottom="24dp"
-                app:cardElevation="8dp"
-                app:cardCornerRadius="50dp"
-                app:cardBackgroundColor="@color/primary_blue">
+                android:id="@+id/logo_card"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginTop="110dp"
+                app:cardCornerRadius="55dp"
+                app:cardElevation="12dp"
+                app:cardBackgroundColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/school_logo"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_launcher_foreground"
-                    android:contentDescription="School Logo"
-                    android:scaleType="fitCenter" />
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="fitCenter"
+                    app:tint="@color/primary_blue" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -48,103 +57,215 @@
                 android:id="@+id/welcome_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome Back"
-                android:textSize="32sp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Welcome to School App"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
-                android:layout_marginBottom="8dp"
-                android:gravity="center" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logo_card" />
 
             <TextView
                 android:id="@+id/login_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign in to continue"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:text="Sign in to continue to your account"
                 android:textSize="16sp"
                 android:textColor="@color/text_secondary"
-                android:gravity="center" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/welcome_title" />
 
-        </LinearLayout>
+            <!-- Login Form Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/login_form_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="24dp"
+                app:cardElevation="10dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/background_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_subtitle">
 
-        <!-- Login Form Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            app:cardElevation="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardBackgroundColor="@color/background_card">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Login"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/primary_blue"
+                        android:layout_marginBottom="24dp" />
+
+                    <!-- Email Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/email_input_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        style="@style/Theme.AndroidSchoolApp.TextInputLayout"
+                        android:hint="Email Address"
+                        app:startIconDrawable="@android:drawable/ic_dialog_email"
+                        app:startIconTint="@color/primary_blue"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/email_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:fontFamily="sans-serif"
+                            android:textSize="16sp"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Password Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/password_input_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Theme.AndroidSchoolApp.TextInputLayout"
+                        android:hint="Password"
+                        app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+                        app:startIconTint="@color/primary_blue"
+                        app:endIconMode="password_toggle"
+                        app:endIconTint="@color/primary_blue"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/password_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:fontFamily="sans-serif"
+                            android:textSize="16sp"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Login Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/login_button"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:text="Sign In"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:fontFamily="sans-serif-medium"
+                style="@style/Theme.AndroidSchoolApp.Button"
+                app:cornerRadius="28dp"
+                app:elevation="6dp"
+                app:icon="@android:drawable/ic_menu_send"
+                app:iconGravity="textEnd"
+                app:iconTint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_form_card" />
+                
+            <!-- User Types -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/demo_account_section"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="32dp">
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_button">
 
-                <!-- Email Input -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/email_input_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    style="@style/Theme.AndroidSchoolApp.TextInputLayout"
-                    android:hint="Email Address"
-                    app:startIconDrawable="@android:drawable/ic_dialog_email"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp">
+                    android:text="Demo Accounts"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/email_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:textSize="16sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Password Input -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/password_input_layout"
-                    android:layout_width="match_parent"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/account_chips"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Theme.AndroidSchoolApp.TextInputLayout"
-                    android:hint="Password"
-                    app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
-                    app:endIconMode="password_toggle"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp">
+                    app:singleSelection="true"
+                    app:chipSpacingHorizontal="8dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/password_input"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/student_chip"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:textSize="16sp" />
+                        android:text="Student"
+                        app:chipBackgroundColor="@color/secondary_orange_light"
+                        app:chipIcon="@android:drawable/ic_menu_myplaces"
+                        app:chipIconTint="@color/secondary_orange_dark" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/teacher_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Teacher"
+                        app:chipBackgroundColor="@color/accent_green"
+                        app:chipIcon="@android:drawable/ic_menu_edit"
+                        app:chipIconTint="@color/white" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/admin_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Registrar"
+                        app:chipBackgroundColor="@color/primary_blue_light"
+                        app:chipIcon="@android:drawable/ic_menu_manage"
+                        app:chipIconTint="@color/primary_blue_dark" />
+                </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+            <!-- Footer Credits -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="School App"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/demo_account_section"
+                app:layout_constraintVertical_bias="1.0" />
 
-        <!-- Login Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Sign In"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:layout_marginBottom="80dp"
-            style="@style/Theme.AndroidSchoolApp.Button"
-            app:cornerRadius="28dp"
-            app:elevation="4dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-    </LinearLayout>
-
-</ScrollView> 
+</androidx.constraintlayout.widget.ConstraintLayout> 
