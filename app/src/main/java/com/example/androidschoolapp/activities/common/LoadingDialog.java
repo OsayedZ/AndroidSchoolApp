@@ -12,7 +12,7 @@ import com.example.androidschoolapp.R;
 
 public class LoadingDialog {
     private Dialog dialog;
-    private Context context;
+    private final Context context;
 
     public LoadingDialog(Context context) {
         this.context = context;
