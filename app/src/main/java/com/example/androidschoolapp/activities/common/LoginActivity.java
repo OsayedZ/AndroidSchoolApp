@@ -1,41 +1,34 @@
-package com.example.androidschoolapp;
+package com.example.androidschoolapp.activities.common;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import com.example.androidschoolapp.R;
+import com.example.androidschoolapp.activities.registrar.RegistrarDashboardActivity;
+import com.example.androidschoolapp.activities.teacher.TeacherDashboardActivity;
+import com.example.androidschoolapp.activities.student.StudentDashboardActivity;
+import com.example.androidschoolapp.api.ApiClient;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private TextInputLayout emailInputLayout, passwordInputLayout;
     private TextInputEditText emailInput, passwordInput;
     private MaterialButton loginButton;
     private Chip studentChip, teacherChip, adminChip;
+    
+    public LoginActivity() {
+        super();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.login_root), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        setupContentView(R.layout.activity_login, R.id.login_root);
 
         initializeViews();
         setupClickListeners();
@@ -54,9 +47,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         loginButton.setOnClickListener(v -> attemptLogin());
-        studentChip.setOnClickListener(v-> login("student@school.com", "student123"));
-        teacherChip.setOnClickListener(v-> login("teacher@school.com", "teacher123"));
-        adminChip.setOnClickListener(v-> login("registrar@school.com", "registrar123"));
+        studentChip.setOnClickListener(v -> login("student@school.com", "student123"));
+        teacherChip.setOnClickListener(v -> login("teacher@school.com", "teacher123"));
+        adminChip.setOnClickListener(v -> login("registrar@school.com", "registrar123"));
     }
 
     private void attemptLogin() {
@@ -82,9 +75,6 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(password)) {
             passwordInputLayout.setError("Password is required");
             isValid = false;
-        } else if (password.length() < 6) {
-            passwordInputLayout.setError("Password must be at least 6 characters");
-            isValid = false;
         }
 
         if (isValid) {
@@ -96,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-
     private void performLogin(String email, String password) {
         // Show loading state
         loginButton.setEnabled(false);
@@ -105,45 +94,46 @@ public class LoginActivity extends AppCompatActivity {
         login(email, password);
     }
 
-    private Class getClassForRole(String email) {
-        switch(email)
-        {
+    private Class getClassForRole(String role) {
+        switch (role.toLowerCase()) {
             default:
-            case "student@school.com":
+            case "student":
                 return StudentDashboardActivity.class;
-            case "teacher@school.com":
+            case "teacher":
                 return TeacherDashboardActivity.class;
-            case "registrar@school.com":
+            case "registrar":
                 return RegistrarDashboardActivity.class;
         }
     }
+
     private void login(String email, String password) {
-        // TODO: Replace with actual authentication logic
 
-        if (isValidCredentials(email, password)) {
-            // Login successful
-            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, getClassForRole(email));
-            intent.putExtra("USER_EMAIL", email);
-            startActivity(intent);
+        startLoading();
+        apiClient.login(email, password,
+                new ApiClient.DataCallback<String>() {
+                    @Override
+                    public void onSuccess(String role) {
+                        showToast("Login successful!");
+                        // Navigate to appropriate dashboard based on role
+                        Intent intent = new Intent(LoginActivity.this, getClassForRole(role));
+                        intent.putExtra("USER_EMAIL", email);
+                        startActivity(intent);
+                        finish();
+                        endLoading();
+                    }
 
-            finish();
-        } else {
-            // Login failed
-            Toast.makeText(LoginActivity.this, "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show();
-            resetLoginButton();
-        }
-    }
-
-    private boolean isValidCredentials(String email, String password) {
-        return (email.equals("student@school.com") && password.equals("student123")) ||
-                (email.equals("teacher@school.com") && password.equals("teacher123")) ||
-                (email.equals("registrar@school.com") && password.equals("registrar123"));
+                    @Override
+                    public void onError(String errorMessage) {
+                        resetLoginButton();
+                        endLoading();
+                    }
+                }
+        );
     }
 
     private void resetLoginButton() {
         loginButton.setEnabled(true);
         loginButton.setText("Sign In");
     }
+}
 
-} 

@@ -5,7 +5,7 @@
     android:id="@+id/registrar_dashboard_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegistrarDashboardActivity">
+    tools:context=".activities.registrar.RegistrarDashboardActivity">
 
     <TextView
         android:id="@+id/welcome_text"

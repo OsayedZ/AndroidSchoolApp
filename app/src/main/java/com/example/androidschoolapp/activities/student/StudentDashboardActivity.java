@@ -1,33 +1,27 @@
-package com.example.androidschoolapp;
+package com.example.androidschoolapp.activities.student;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-public class StudentDashboardActivity extends AppCompatActivity {
+import com.example.androidschoolapp.R;
+import com.example.androidschoolapp.activities.common.BaseActivity;
+
+public class StudentDashboardActivity extends BaseActivity {
 
     private CardView tasksCard, scheduleCard, gradesCard, submissionsCard;
     private TextView welcomeText;
+    
+    public StudentDashboardActivity() {
+        super();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_student_dashboard);
-        
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.student_dashboard_root), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        setupContentView(R.layout.activity_student_dashboard, R.id.student_dashboard_root);
 
         initializeViews();
         setupClickListeners();

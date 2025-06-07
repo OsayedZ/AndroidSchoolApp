@@ -5,7 +5,7 @@
     android:id="@+id/student_dashboard_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StudentDashboardActivity">
+    tools:context=".activities.student.StudentDashboardActivity">
 
     <TextView
         android:id="@+id/welcome_text"

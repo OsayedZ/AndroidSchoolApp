@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,11 +14,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidSchoolApp"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         
         <!-- Login Activity - Launcher Activity -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.common.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,42 +28,42 @@
         </activity>
           <!-- Main Activity - After Login -->
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.common.MainActivity"
             android:exported="false" />
             
         <!-- Student Activities -->
         <activity
-            android:name=".StudentDashboardActivity"
+            android:name=".activities.student.StudentDashboardActivity"
             android:exported="false" />
             
         <activity
-            android:name=".StudentTasksActivity"
+            android:name=".activities.student.StudentTasksActivity"
             android:exported="false"
-            android:parentActivityName=".StudentDashboardActivity" />
+            android:parentActivityName=".activities.student.StudentDashboardActivity" />
             
         <activity
-            android:name=".StudentScheduleActivity"
+            android:name=".activities.student.StudentScheduleActivity"
             android:exported="false"
-            android:parentActivityName=".StudentDashboardActivity" />
+            android:parentActivityName=".activities.student.StudentDashboardActivity" />
             
         <activity
-            android:name=".StudentGradesActivity"
+            android:name=".activities.student.StudentGradesActivity"
             android:exported="false"
-            android:parentActivityName=".StudentDashboardActivity" />
+            android:parentActivityName=".activities.student.StudentDashboardActivity" />
               <activity
-            android:name=".StudentSubmissionsActivity"
+            android:name=".activities.student.StudentSubmissionsActivity"
             android:exported="false"
-            android:parentActivityName=".StudentDashboardActivity" />
+            android:parentActivityName=".activities.student.StudentDashboardActivity" />
             
         <!-- Teacher Activities -->
         <activity
-            android:name=".TeacherDashboardActivity"
+            android:name=".activities.teacher.TeacherDashboardActivity"
             android:exported="false" />
 
             
         <!-- Registrar Activities -->
         <activity
-            android:name=".RegistrarDashboardActivity"
+            android:name=".activities.registrar.RegistrarDashboardActivity"
             android:exported="false" />
 
 
