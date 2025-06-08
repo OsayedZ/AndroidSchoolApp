@@ -16,9 +16,18 @@ import java.util.Map;
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
     private List<Map<String, String>> tasks;
+    private OnTaskClickListener onTaskClickListener;
+
+    public interface OnTaskClickListener {
+        void onTaskClick(Map<String, String> task);
+    }
 
     public TasksAdapter(List<Map<String, String>> tasks) {
         this.tasks = tasks;
+    }
+
+    public void setOnTaskClickListener(OnTaskClickListener listener) {
+        this.onTaskClickListener = listener;
     }
 
     public void updateTasks(List<Map<String, String>> newTasks) {
@@ -59,6 +68,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         } else {
             holder.taskStatusTextView.setVisibility(View.GONE);
         }
+
+        // Set click listener
+        holder.itemView.setOnClickListener(v -> {
+            if (onTaskClickListener != null) {
+                onTaskClickListener.onTaskClick(task);
+            }
+        });
     }
 
     @Override

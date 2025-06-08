@@ -42,6 +42,11 @@
             android:parentActivityName=".activities.student.StudentDashboardActivity" />
             
         <activity
+            android:name=".activities.student.TaskDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.student.StudentTasksActivity" />
+            
+        <activity
             android:name=".activities.student.StudentScheduleActivity"
             android:exported="false"
             android:parentActivityName=".activities.student.StudentDashboardActivity" />

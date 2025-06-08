@@ -10,12 +10,25 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.androidschoolapp.models.Class;
+import com.example.androidschoolapp.models.ClassSubject;
+import com.example.androidschoolapp.models.Subject;
+import com.example.androidschoolapp.models.Task;
+import com.example.androidschoolapp.models.Test;
+import com.example.androidschoolapp.models.User;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,11 +41,13 @@ public class ApiClient {
     private final RequestQueue requestQueue;
     private final Context context;
     private final SessionManager sessionManager;
+    private final Gson gson;
 
     private ApiClient(Context context) {
         this.context = context;
         this.requestQueue = Volley.newRequestQueue(context);
         this.sessionManager = SessionManager.getInstance(context);
+        this.gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
     }
 
     public static synchronized ApiClient getInstance(Context context) {
@@ -97,7 +112,7 @@ public class ApiClient {
     }
 
     // Authentication
-    public void login(String email, String password, final DataCallback<String> callback) {
+    public void login(String email, String password, final DataCallback<User> callback) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("Email", email);
@@ -116,8 +131,12 @@ public class ApiClient {
                                 SessionManager sessionManager = SessionManager.getInstance(context);
                                 sessionManager.saveUserLoginFromResponse(response, email);
                                 
-                                String role = response.getString("Role");
-                                callback.onSuccess(role);
+                                // Create a basic user object with info we have
+                                User user = new User();
+                                user.setEmail(email);
+                                user.setRole(response.optString("Role", ""));
+                                
+                                callback.onSuccess(user);
                             } else {
                                 // Error
                                 String message = response.optString("Message", "Login failed");
@@ -144,29 +163,32 @@ public class ApiClient {
     }
 
     // Student API Methods
-    public void getStudentTasks(final DataCallback<List<Map<String, String>>> callback) {
+    public void getStudentTasks(final DataCallback<List<Task>> callback) {
         makeApiRequest(Request.Method.GET, "/Tasks/Get.php", 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
                     if (response.has("Status") && response.getString("Status").equals("Success")) {
-                        List<Map<String, String>> tasksList = new ArrayList<>();
+                        List<Task> tasksList = new ArrayList<>();
                         
                         if (response.has("Tasks")) {
                             JSONArray tasksArray = response.getJSONArray("Tasks");
                             
                             for (int i = 0; i < tasksArray.length(); i++) {
                                 JSONObject taskObject = tasksArray.getJSONObject(i);
-                                Map<String, String> taskMap = new HashMap<>();
+                                Task task = new Task();
                                 
-                                Iterator<String> keys = taskObject.keys();
-                                while (keys.hasNext()) {
-                                    String key = keys.next();
-                                    taskMap.put(key, taskObject.getString(key));
-                                }
+                                task.setId(taskObject.optInt("ID", 0));
+                                task.setType(taskObject.optString("Type", "Assignment"));
+                                task.setDescription(taskObject.optString("Description", ""));
+                                task.setUserId(taskObject.optInt("UserID", 0));
+                                task.setMark(taskObject.optDouble("Mark", 0.0));
+                                task.setSubjectId(taskObject.optInt("SubjectID", 0));
+                                task.setName(taskObject.optString("Name", ""));
+                                task.setAnswer(taskObject.optString("Answer", ""));
                                 
-                                tasksList.add(taskMap);
+                                tasksList.add(task);
                             }
                         }
                         
@@ -188,29 +210,28 @@ public class ApiClient {
         });
     }
 
-    public void getStudentSchedule(final DataCallback<List<Map<String, String>>> callback) {
+    public void getStudentSchedule(final DataCallback<List<Subject>> callback) {
         makeApiRequest(Request.Method.GET, "/Schedules/StudentSchedule.php", 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
                     if (response.has("Status") && response.getString("Status").equals("Success")) {
-                        List<Map<String, String>> scheduleList = new ArrayList<>();
+                        List<Subject> scheduleList = new ArrayList<>();
                         
                         if (response.has("Schedule")) {
                             JSONArray scheduleArray = response.getJSONArray("Schedule");
                             
                             for (int i = 0; i < scheduleArray.length(); i++) {
                                 JSONObject scheduleObject = scheduleArray.getJSONObject(i);
-                                Map<String, String> scheduleMap = new HashMap<>();
+                                Subject subject = new Subject();
                                 
-                                Iterator<String> keys = scheduleObject.keys();
-                                while (keys.hasNext()) {
-                                    String key = keys.next();
-                                    scheduleMap.put(key, scheduleObject.getString(key));
-                                }
+                                subject.setName(scheduleObject.optString("Name", ""));
+                                subject.setDay(scheduleObject.optInt("Day", 0));
+                                subject.setStartTime(scheduleObject.optString("Start", ""));
+                                subject.setEndTime(scheduleObject.optString("End", ""));
                                 
-                                scheduleList.add(scheduleMap);
+                                scheduleList.add(subject);
                             }
                         }
                         
@@ -232,10 +253,10 @@ public class ApiClient {
         });
     }
 
-    public void submitTask(String answer, final DataCallback<String> callback) {
+    public void submitTask(Task task, final DataCallback<String> callback) {
         try {
             Map<String, String> params = new HashMap<>();
-            params.put("Answer", answer);
+            params.put("Answer", task.getAnswer());
             
             makeApiRequest(Request.Method.POST, "/Tasks/SubmitTask.php", 
                           params, true, new ApiResponseCallback() {
@@ -268,12 +289,38 @@ public class ApiClient {
     }
 
     // Teacher API Methods
-    public void getTeacherClasses(final DataCallback<List<Map<String, String>>> callback) {
+    public void getTeacherClasses(final DataCallback<List<Class>> callback) {
         makeApiRequest(Request.Method.GET, "/Classes/TeacherClasses.php", 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
-                parseListResponse(response, "Classes", "Failed to fetch classes", callback);
+                try {
+                    if (response.has("Status") && response.getString("Status").equals("Success")) {
+                        List<Class> classesList = new ArrayList<>();
+                        
+                        if (response.has("Classes")) {
+                            JSONArray classesArray = response.getJSONArray("Classes");
+                            
+                            for (int i = 0; i < classesArray.length(); i++) {
+                                JSONObject classObject = classesArray.getJSONObject(i);
+                                Class classItem = new Class();
+                                
+                                classItem.setId(classObject.optInt("ID", 0));
+                                classItem.setName(classObject.optString("Name", ""));
+                                
+                                classesList.add(classItem);
+                            }
+                        }
+                        
+                        callback.onSuccess(classesList);
+                    } else {
+                        String message = response.optString("Message", "Failed to fetch classes");
+                        callback.onError(message);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing classes response", e);
+                    callback.onError("Error parsing response: " + e.getMessage());
+                }
             }
 
             @Override
@@ -283,12 +330,43 @@ public class ApiClient {
         });
     }
 
-    public void getStudentsInClass(String classId, final DataCallback<List<Map<String, String>>> callback) {
+    public void getStudentsInClass(int classId, final DataCallback<List<User>> callback) {
         makeApiRequest(Request.Method.GET, "/Classes/Students.php?classID=" + classId, 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
-                parseListResponse(response, "Students", "Failed to fetch students", callback);
+                try {
+                    if (response.has("Status") && response.getString("Status").equals("Success")) {
+                        List<User> studentsList = new ArrayList<>();
+                        
+                        if (response.has("Students")) {
+                            JSONArray studentsArray = response.getJSONArray("Students");
+                            
+                            for (int i = 0; i < studentsArray.length(); i++) {
+                                JSONObject studentObject = studentsArray.getJSONObject(i);
+                                User student = new User();
+                                
+                                student.setId(studentObject.optInt("ID", 0));
+                                student.setName(studentObject.optString("Name", ""));
+                                student.setEmail(studentObject.optString("Email", ""));
+                                student.setAge(studentObject.optInt("Age", 0));
+                                student.setGender(studentObject.optInt("Gender", 0) == 1);
+                                student.setRole("Student");
+                                student.setClassId(classId);
+                                
+                                studentsList.add(student);
+                            }
+                        }
+                        
+                        callback.onSuccess(studentsList);
+                    } else {
+                        String message = response.optString("Message", "Failed to fetch students");
+                        callback.onError(message);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing students response", e);
+                    callback.onError("Error parsing response: " + e.getMessage());
+                }
             }
 
             @Override
@@ -334,14 +412,13 @@ public class ApiClient {
     }
 
 
-    public void addTask(String name, String type, String description,
-                      int subjectId, final DataCallback<String> callback) {
+    public void addTask(Task task, final DataCallback<String> callback) {
         try {
             Map<String, String> params = new HashMap<>();
-            params.put("Name", name);
-            params.put("Type", type);
-            params.put("Description", description);
-            params.put("SubjectID", String.valueOf(subjectId));
+            params.put("Name", task.getName());
+            params.put("Type", task.getType());
+            params.put("Description", task.getDescription());
+            params.put("SubjectID", String.valueOf(task.getSubjectId()));
             
             makeApiRequest(Request.Method.POST, "/Tasks/Add.php", 
                           params, true, new ApiResponseCallback() {
@@ -376,5 +453,631 @@ public class ApiClient {
     private interface ApiResponseCallback {
         void onSuccess(JSONObject response);
         void onError(String errorMessage);
+    }
+    
+    // Method to edit a task
+    public void editTask(Task task, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Name", task.getName());
+            params.put("Type", task.getType());
+            params.put("Description", task.getDescription());
+            params.put("SubjectID", String.valueOf(task.getSubjectId()));
+            
+            makeApiRequest(Request.Method.POST, "/Tasks/Edit.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating edit task request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to delete a task
+    public void deleteTask(Task task, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Name", task.getName());
+            params.put("SubjectID", String.valueOf(task.getSubjectId()));
+            
+            makeApiRequest(Request.Method.POST, "/Tasks/Delete.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating delete task request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to grade a task
+    public void gradeTask(Task task, int studentId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Mark", String.valueOf(task.getMark()));
+            params.put("StudentID", String.valueOf(studentId));
+            params.put("Name", task.getName());
+            params.put("SubjectID", String.valueOf(task.getSubjectId()));
+            
+            makeApiRequest(Request.Method.POST, "/Tasks/GradeTask.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating grade task request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to get teacher schedule
+    public void getTeacherSchedule(final DataCallback<List<Subject>> callback) {
+        makeApiRequest(Request.Method.GET, "/Schedules/TeacherSchedule.php", 
+                      null, true, new ApiResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    if (response.has("Status") && response.getString("Status").equals("Success")) {
+                        List<Subject> scheduleList = new ArrayList<>();
+                        
+                        if (response.has("Schedule")) {
+                            JSONArray scheduleArray = response.getJSONArray("Schedule");
+                            
+                            for (int i = 0; i < scheduleArray.length(); i++) {
+                                JSONObject scheduleObject = scheduleArray.getJSONObject(i);
+                                Subject subject = new Subject();
+                                
+                                subject.setName(scheduleObject.optString("Name", ""));
+                                subject.setDay(scheduleObject.optInt("Day", 0));
+                                subject.setStartTime(scheduleObject.optString("Start", ""));
+                                subject.setEndTime(scheduleObject.optString("End", ""));
+                                
+                                scheduleList.add(subject);
+                            }
+                        }
+                        
+                        callback.onSuccess(scheduleList);
+                    } else {
+                        String message = response.optString("Message", "Failed to fetch schedule");
+                        callback.onError(message);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing schedule response", e);
+                    callback.onError("Error parsing response: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
+    }
+    
+    // Helper method to handle simple response
+    private void handleSimpleResponse(JSONObject response, DataCallback<String> callback) {
+        try {
+            String status = response.optString("Status", "Error");
+            String message = response.optString("Message", "Operation failed");
+
+            if (status.equals("Success")) {
+                callback.onSuccess(message);
+            } else {
+                callback.onError(message);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing simple response", e);
+            callback.onError("Error parsing response: " + e.getMessage());
+        }
+    }
+    
+    // Registrar API methods
+    
+    // Method to get all classes
+    public void getClasses(final DataCallback<List<Class>> callback) {
+        makeApiRequest(Request.Method.GET, "/Classes/Get.php", 
+                      null, true, new ApiResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    if (response.has("Status") && response.getString("Status").equals("Success")) {
+                        List<Class> classesList = new ArrayList<>();
+                        
+                        if (response.has("Classes")) {
+                            JSONArray classesArray = response.getJSONArray("Classes");
+                            
+                            for (int i = 0; i < classesArray.length(); i++) {
+                                JSONObject classObject = classesArray.getJSONObject(i);
+                                Class classItem = new Class();
+                                
+                                classItem.setId(classObject.optInt("ID", 0));
+                                classItem.setName(classObject.optString("Name", ""));
+                                
+                                classesList.add(classItem);
+                            }
+                        }
+                        
+                        callback.onSuccess(classesList);
+                    } else {
+                        String message = response.optString("Message", "Failed to fetch classes");
+                        callback.onError(message);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing classes response", e);
+                    callback.onError("Error parsing response: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
+    }
+    
+    // Method to add a class
+    public void addClass(Class classItem, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Name", classItem.getName());
+            
+            makeApiRequest(Request.Method.POST, "/Classes/Add.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating add class request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to edit a class
+    public void editClass(Class classItem, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Name", classItem.getName());
+            params.put("ID", String.valueOf(classItem.getId()));
+            
+            makeApiRequest(Request.Method.POST, "/Classes/Edit.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating edit class request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to delete a class
+    public void deleteClass(int classId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("ID", String.valueOf(classId));
+            
+            makeApiRequest(Request.Method.POST, "/Classes/Delete.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating delete class request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to get all students
+    public void getStudents(final DataCallback<List<User>> callback) {
+        makeApiRequest(Request.Method.GET, "/Students/Get.php", 
+                      null, true, new ApiResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    if (response.has("Status") && response.getString("Status").equals("Success")) {
+                        List<User> studentsList = new ArrayList<>();
+                        
+                        if (response.has("Students")) {
+                            JSONArray studentsArray = response.getJSONArray("Students");
+                            
+                            for (int i = 0; i < studentsArray.length(); i++) {
+                                JSONObject studentObject = studentsArray.getJSONObject(i);
+                                User student = new User();
+                                
+                                student.setName(studentObject.optString("Name", ""));
+                                student.setEmail(studentObject.optString("Email", ""));
+                                student.setAge(studentObject.optInt("Age", 0));
+                                
+                                // Handle gender (from string or int)
+                                if (studentObject.has("Gender")) {
+                                    try {
+                                        // Try to parse as integer
+                                        int genderInt = studentObject.getInt("Gender");
+                                        student.setGender(genderInt == 1);
+                                    } catch (JSONException e) {
+                                        // Try to parse as string
+                                        String genderStr = studentObject.getString("Gender");
+                                        student.setGender(genderStr.equalsIgnoreCase("Male") || genderStr.equals("1"));
+                                    }
+                                }
+                                
+                                student.setClassId(studentObject.optInt("ClassID", 0));
+                                student.setRole("Student");
+                                
+                                studentsList.add(student);
+                            }
+                        }
+                        
+                        callback.onSuccess(studentsList);
+                    } else {
+                        String message = response.optString("Message", "Failed to fetch students");
+                        callback.onError(message);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing students response", e);
+                    callback.onError("Error parsing response: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
+    }
+    
+    // Method to add a student or teacher
+    public void addStudentOrTeacher(User user, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Name", user.getName());
+            params.put("Email", user.getEmail());
+            params.put("Age", String.valueOf(user.getAge()));
+            params.put("Gender", user.getGenderString());
+            params.put("Password", user.getPassword());
+            params.put("ClassID", String.valueOf(user.getClassId()));
+            params.put("Role", user.getRole());
+            
+            makeApiRequest(Request.Method.POST, "/Registrars/AddST.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating add student/teacher request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to edit a student or teacher
+    public void editStudentOrTeacher(User user, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Name", user.getName());
+            params.put("Email", user.getEmail());
+            params.put("Age", String.valueOf(user.getAge()));
+            params.put("Gender", user.getGenderString());
+            params.put("Password", user.getPassword());
+            params.put("ID", String.valueOf(user.getId()));
+            
+            makeApiRequest(Request.Method.POST, "/Registrars/EditST.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating edit student/teacher request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to delete a student or teacher
+    public void deleteStudentOrTeacher(int userId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("ID", String.valueOf(userId));
+            
+            makeApiRequest(Request.Method.POST, "/Registrars/DeleteST.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating delete student/teacher request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to set student's class
+    public void setStudentClass(int studentId, int classId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("StudentID", String.valueOf(studentId));
+            params.put("ClassID", String.valueOf(classId));
+            
+            makeApiRequest(Request.Method.POST, "/Students/SetClass.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating set student class request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to get all subjects
+    public void getSubjects(final DataCallback<List<Subject>> callback) {
+        makeApiRequest(Request.Method.GET, "/Subjects/Get.php", 
+                      null, true, new ApiResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    if (response.has("Status") && response.getString("Status").equals("Success")) {
+                        List<Subject> subjectsList = new ArrayList<>();
+                        
+                        if (response.has("Subjects")) {
+                            JSONArray subjectsArray = response.getJSONArray("Subjects");
+                            
+                            for (int i = 0; i < subjectsArray.length(); i++) {
+                                JSONObject subjectObject = subjectsArray.getJSONObject(i);
+                                Subject subject = new Subject();
+                                
+                                subject.setId(subjectObject.optInt("ID", 0));
+                                subject.setName(subjectObject.optString("Name", ""));
+                                subject.setTeacherId(subjectObject.optInt("TeacherID", 0));
+                                subject.setStartTime(subjectObject.optString("Start", ""));
+                                subject.setEndTime(subjectObject.optString("End", ""));
+                                subject.setDay(subjectObject.optInt("Day", 0));
+                                
+                                subjectsList.add(subject);
+                            }
+                        }
+                        
+                        callback.onSuccess(subjectsList);
+                    } else {
+                        String message = response.optString("Message", "Failed to fetch subjects");
+                        callback.onError(message);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing subjects response", e);
+                    callback.onError("Error parsing response: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
+    }
+    
+    // Method to add a subject
+    public void addSubject(Subject subject, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("Name", subject.getName());
+            params.put("TeacherID", String.valueOf(subject.getTeacherId()));
+            params.put("Start", subject.getStartTime());
+            params.put("End", subject.getEndTime());
+            params.put("Day", String.valueOf(subject.getDay()));
+            
+            makeApiRequest(Request.Method.POST, "/Subjects/Add.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating add subject request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to edit a subject
+    public void editSubject(Subject subject, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("ID", String.valueOf(subject.getId()));
+            params.put("Name", subject.getName());
+            params.put("TeacherID", String.valueOf(subject.getTeacherId()));
+            params.put("Start", subject.getStartTime());
+            params.put("End", subject.getEndTime());
+            params.put("Day", String.valueOf(subject.getDay()));
+            
+            makeApiRequest(Request.Method.POST, "/Subjects/Edit.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating edit subject request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to delete a subject
+    public void deleteSubject(int subjectId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("ID", String.valueOf(subjectId));
+            
+            makeApiRequest(Request.Method.POST, "/Subjects/Delete.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating delete subject request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to assign subject to class
+    public void assignSubjectToClass(int subjectId, int classId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("SubjectID", String.valueOf(subjectId));
+            params.put("ClassID", String.valueOf(classId));
+            
+            makeApiRequest(Request.Method.POST, "/Classes/AssignSubject.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating assign subject request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to unassign subject from class
+    public void unassignSubjectFromClass(int subjectId, int classId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("SubjectID", String.valueOf(subjectId));
+            params.put("ClassID", String.valueOf(classId));
+            
+            makeApiRequest(Request.Method.POST, "/Classes/UnassignSubject.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating unassign subject request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
+    }
+    
+    // Method to assign teacher to subject
+    public void assignTeacherToSubject(int teacherId, int subjectId, final DataCallback<String> callback) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("TeacherID", String.valueOf(teacherId));
+            params.put("SubjectID", String.valueOf(subjectId));
+            
+            makeApiRequest(Request.Method.POST, "/Subjects/AssignTeacher.php", 
+                          params, true, new ApiResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    handleSimpleResponse(response, callback);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating assign teacher request", e);
+            callback.onError("Error creating request: " + e.getMessage());
+        }
     }
 }

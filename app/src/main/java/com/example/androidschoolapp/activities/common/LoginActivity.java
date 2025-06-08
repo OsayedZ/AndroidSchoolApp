@@ -9,6 +9,7 @@ import com.example.androidschoolapp.activities.registrar.RegistrarDashboardActiv
 import com.example.androidschoolapp.activities.teacher.TeacherDashboardActivity;
 import com.example.androidschoolapp.activities.student.StudentDashboardActivity;
 import com.example.androidschoolapp.api.ApiClient;
+import com.example.androidschoolapp.models.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
@@ -110,12 +111,12 @@ public class LoginActivity extends BaseActivity {
 
         startLoading();
         apiClient.login(email, password,
-                new ApiClient.DataCallback<String>() {
+                new ApiClient.DataCallback<User>() {
                     @Override
-                    public void onSuccess(String role) {
+                    public void onSuccess(User user) {
                         showToast("Login successful!");
                         // Navigate to appropriate dashboard based on role
-                        Intent intent = new Intent(LoginActivity.this, getClassForRole(role));
+                        Intent intent = new Intent(LoginActivity.this, getClassForRole(user.getRole()));
                         intent.putExtra("USER_EMAIL", email);
                         startActivity(intent);
                         finish();
