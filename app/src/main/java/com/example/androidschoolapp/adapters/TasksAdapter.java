@@ -9,20 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidschoolapp.R;
+import com.example.androidschoolapp.models.Task;
 
 import java.util.List;
-import java.util.Map;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
-    private List<Map<String, String>> tasks;
+    private List<Task> tasks;
     private OnTaskClickListener onTaskClickListener;
 
     public interface OnTaskClickListener {
-        void onTaskClick(Map<String, String> task);
+        void onTaskClick(Task task);
     }
 
-    public TasksAdapter(List<Map<String, String>> tasks) {
+    public TasksAdapter(List<Task> tasks) {
         this.tasks = tasks;
     }
 
@@ -30,7 +30,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         this.onTaskClickListener = listener;
     }
 
-    public void updateTasks(List<Map<String, String>> newTasks) {
+    public void updateTasks(List<Task> newTasks) {
         this.tasks = newTasks;
         notifyDataSetChanged();
     }
@@ -45,29 +45,17 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Map<String, String> task = tasks.get(position);
+        Task task = tasks.get(position);
         
-        holder.taskNameTextView.setText(task.get("Name"));
-        holder.taskTypeTextView.setText(task.get("Type"));
-        holder.taskDescriptionTextView.setText(task.get("Description"));
+        holder.taskNameTextView.setText(task.getName());
+        holder.taskTypeTextView.setText(task.getType());
+        holder.taskDescriptionTextView.setText(task.getDescription());
         
-        // Format due date
-        String dueDate = task.get("DueDate");
-        if (dueDate != null && !dueDate.isEmpty()) {
-            holder.taskDueDateTextView.setText("Due: " + dueDate);
-            holder.taskDueDateTextView.setVisibility(View.VISIBLE);
-        } else {
-            holder.taskDueDateTextView.setVisibility(View.GONE);
-        }
+        // Due date not available in the current Task model
+        holder.taskDueDateTextView.setVisibility(View.GONE);
         
-        // Set status if available
-        String status = task.get("Status");
-        if (status != null && !status.isEmpty()) {
-            holder.taskStatusTextView.setText("Status: " + status);
-            holder.taskStatusTextView.setVisibility(View.VISIBLE);
-        } else {
-            holder.taskStatusTextView.setVisibility(View.GONE);
-        }
+        // Hide status view - not needed for student tasks
+        holder.taskStatusTextView.setVisibility(View.GONE);
 
         // Set click listener
         holder.itemView.setOnClickListener(v -> {

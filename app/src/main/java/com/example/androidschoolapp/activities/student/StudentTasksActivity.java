@@ -14,10 +14,10 @@ import com.example.androidschoolapp.R;
 import com.example.androidschoolapp.activities.common.BaseActivity;
 import com.example.androidschoolapp.adapters.TasksAdapter;
 import com.example.androidschoolapp.api.ApiClient;
+import com.example.androidschoolapp.models.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class StudentTasksActivity extends BaseActivity {
 
@@ -46,16 +46,15 @@ public class StudentTasksActivity extends BaseActivity {
 
         // Setup task item click listener
         tasksAdapter.setOnTaskClickListener(task -> {
-            String taskId = task.get("TaskID");
-            String taskTitle = task.get("Name");
-            String taskDescription = task.get("Description");
-            String taskType = task.get("Type");
-            String taskStatus = task.get("Status");
+            int taskId = task.getId();
+            String taskTitle = task.getName();
+            String taskDescription = task.getDescription();
+            String taskType = task.getType();
             
-            if (taskId != null && taskTitle != null) {
+            if (taskTitle != null) {
                 Log.d("Test", "test");
 
-                navigateToTaskDetail(taskId, taskTitle, taskDescription, taskType, taskStatus);
+                navigateToTaskDetail(String.valueOf(taskId), taskTitle, taskDescription, taskType);
             }
         });
 
@@ -73,13 +72,12 @@ public class StudentTasksActivity extends BaseActivity {
     }
 
     private void navigateToTaskDetail(String taskId, String taskTitle, String taskDescription, 
-                                     String taskType, String taskStatus) {
+                                     String taskType) {
         Intent intent = new Intent(this, TaskDetailActivity.class);
         intent.putExtra("task_id", taskId);
         intent.putExtra("task_title", taskTitle);
         intent.putExtra("task_description", taskDescription);
         intent.putExtra("task_type", taskType);
-        intent.putExtra("task_status", taskStatus);
         startActivity(intent);
     }
 
@@ -87,24 +85,24 @@ public class StudentTasksActivity extends BaseActivity {
         // Show loading indicator if needed
         // You could show a ProgressBar here if desired
 
-//        apiClient.getStudentTasks(
-//                new ApiClient.DataCallback<List<Map<String, String>>>() {
-//                    @Override
-//                    public void onSuccess(List<Map<String, String>> tasks) {
-//                        isDataLoaded = true;
-//                        updateTasksUI(tasks);
-//                    }
-//
-//                    @Override
-//                    public void onError(String errorMessage) {
-//                        isDataLoaded = false;
-//                        showError(errorMessage);
-//                    }
-//                }
-//        );
+        apiClient.getStudentTasks(
+                new ApiClient.DataCallback<List<Task>>() {
+                    @Override
+                    public void onSuccess(List<Task> tasks) {
+                        isDataLoaded = true;
+                        updateTasksUI(tasks);
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        isDataLoaded = false;
+                        showError(errorMessage);
+                    }
+                }
+        );
     }
 
-    private void updateTasksUI(List<Map<String, String>> tasks) {
+    private void updateTasksUI(List<Task> tasks) {
         if (tasks.isEmpty()) {
             showEmptyState(true);
         } else {

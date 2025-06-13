@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.androidschoolapp.R;
 import com.example.androidschoolapp.activities.common.BaseActivity;
 import com.example.androidschoolapp.api.ApiClient;
+import com.example.androidschoolapp.models.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -17,13 +18,11 @@ public class TaskDetailActivity extends BaseActivity {
     private TextView taskTitleTextView;
     private TextView taskTypeTextView;
     private TextView taskDescriptionTextView;
-    private TextView taskStatusTextView;
     private TextInputLayout answerInputLayout;
     private TextInputEditText answerEditText;
     private Button submitButton;
 
     private String taskId;
-    private String taskStatus;
 
     public TaskDetailActivity() {
         super("Task Details");
@@ -39,13 +38,11 @@ public class TaskDetailActivity extends BaseActivity {
         String taskTitle = getIntent().getStringExtra("task_title");
         String taskDescription = getIntent().getStringExtra("task_description");
         String taskType = getIntent().getStringExtra("task_type");
-        taskStatus = getIntent().getStringExtra("task_status");
 
         // Initialize views
         taskTitleTextView = findViewById(R.id.task_title);
         taskTypeTextView = findViewById(R.id.task_type);
         taskDescriptionTextView = findViewById(R.id.task_description);
-        taskStatusTextView = findViewById(R.id.task_status);
         answerInputLayout = findViewById(R.id.answer_input_layout);
         answerEditText = findViewById(R.id.answer_input);
         submitButton = findViewById(R.id.submit_button);
@@ -55,17 +52,9 @@ public class TaskDetailActivity extends BaseActivity {
         taskTypeTextView.setText(taskType);
         taskDescriptionTextView.setText(taskDescription);
         
-        if (taskStatus != null && !taskStatus.isEmpty()) {
-            taskStatusTextView.setText("Status: " + taskStatus);
-            taskStatusTextView.setVisibility(View.VISIBLE);
-            
-            // If task is already submitted, hide the answer input
-            if (taskStatus.equalsIgnoreCase("Submitted") || 
-                taskStatus.equalsIgnoreCase("Graded")) {
-                answerInputLayout.setVisibility(View.GONE);
-                submitButton.setVisibility(View.GONE);
-            }
-        } else {
+        // Hide the status text view
+        TextView taskStatusTextView = findViewById(R.id.task_status);
+        if (taskStatusTextView != null) {
             taskStatusTextView.setVisibility(View.GONE);
         }
 
@@ -86,33 +75,28 @@ public class TaskDetailActivity extends BaseActivity {
         
         // Show loading
         showLoading(true);
-//
-//        // Call API to submit task
-//        apiClient.submitTask(answer, new ApiClient.DataCallback<String>() {
-//            @Override
-//            public void onSuccess(String message) {
-//                showLoading(false);
-//                Toast.makeText(TaskDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-//
-//                // Update UI to reflect submitted status
-//                taskStatus = "Submitted";
-//                taskStatusTextView.setText("Status: " + taskStatus);
-//                taskStatusTextView.setVisibility(View.VISIBLE);
-//
-//                // Hide submission form
-//                answerInputLayout.setVisibility(View.GONE);
-//                submitButton.setVisibility(View.GONE);
-//
-//                // Return to previous screen after a delay
-//                answerEditText.postDelayed(() -> finish(), 1500);
-//            }
-//
-//            @Override
-//            public void onError(String errorMessage) {
-//                showLoading(false);
-//                Toast.makeText(TaskDetailActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-//            }
-//        });
+        
+        Task task = new Task();
+        task.setId(Integer.parseInt(taskId));
+        task.setAnswer(answer);
+        
+        // Call API to submit task
+        apiClient.submitTask(task, new ApiClient.DataCallback<String>() {
+            @Override
+            public void onSuccess(String message) {
+                showLoading(false);
+                Toast.makeText(TaskDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                // Return to previous screen after a delay
+                answerEditText.postDelayed(() -> finish(), 1500);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                showLoading(false);
+                Toast.makeText(TaskDetailActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void showLoading(boolean isLoading) {
