@@ -59,17 +59,37 @@
             android:name=".activities.student.StudentSubmissionsActivity"
             android:exported="false"
             android:parentActivityName=".activities.student.StudentDashboardActivity" />
-            
-        <!-- Teacher Activities -->
-        <activity
-            android:name=".activities.teacher.TeacherDashboardActivity"
-            android:exported="false" />
+
 
             
         <!-- Registrar Activities -->
         <activity
             android:name=".activities.registrar.RegistrarDashboardActivity"
             android:exported="false" />
+
+
+        <!-- Teacher Activities -->
+        <activity
+            android:name=".activities.teacher.TeacherDashboardActivity"
+            android:exported="false" />
+
+        <activity android:name=".activities.teacher.TeacherClassesActivity"
+            android:exported="false" />
+
+        <activity android:name=".activities.teacher.StudentsInClassActivity"
+            android:exported="false" />
+
+        <activity android:name=".activities.teacher.SubjectsOfClassActivity"
+            android:exported="false" />
+
+        <activity android:name=".activities.teacher.TeacherTasksActivity"
+            android:exported="false"/>
+
+        <activity android:name=".activities.teacher.CreateTaskActivity"
+            android:exported="false"/>
+
+        <activity android:name=".activities.teacher.EditTaskActivity"
+            android:exported="false"/>
 
 
     </application>

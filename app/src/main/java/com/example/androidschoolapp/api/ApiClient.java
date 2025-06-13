@@ -1,34 +1,24 @@
 package com.example.androidschoolapp.api;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidschoolapp.models.Class;
-import com.example.androidschoolapp.models.ClassSubject;
 import com.example.androidschoolapp.models.Subject;
 import com.example.androidschoolapp.models.Task;
-import com.example.androidschoolapp.models.Test;
 import com.example.androidschoolapp.models.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

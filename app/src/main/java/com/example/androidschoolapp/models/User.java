@@ -57,7 +57,14 @@ public class User {
         this.registrationDate = registrationDate;
         this.classId = classId;
     }
-    
+
+    public User(int id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+
     // Getters and Setters
     public int getId() {
         return id;

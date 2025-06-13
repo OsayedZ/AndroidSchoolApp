@@ -41,6 +41,13 @@ public class Subject {
         this.day = day;
     }
 
+    public Subject(int id, String name, int day, String startTime, String endTime) {
+        this.id = id;
+        this.name = name;
+        this.day = day;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
     // Getters and Setters
     public int getId() {
         return id;

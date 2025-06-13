@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registrar_manage_st"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.registrar.RegistrarManageST">
+
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            >
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/arrow_back_"
+                android:text="Button" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_margin="12dp"
+                android:text="Edit Task"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edt_task_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Name"
+            />
+
+
+        <TextView
+            android:id="@+id/edt_task_name_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="15dp"
+            android:text="You should enter a Name for task."
+            android:gravity="center"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type:"
+                android:layout_gravity="center"
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
+            <Spinner
+                android:id="@+id/spn_task_type"
+                android:layout_width="match_parent"
+                android:layout_margin="15dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/spn_task_type_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="15dp"
+            android:text="You should choose a Type for task."
+            android:gravity="center"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edt_task_desc"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Description"
+            />
+
+
+        <TextView
+            android:id="@+id/edt_task_desc_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="15dp"
+            android:text="You should enter a Describtion for task."
+            android:gravity="center"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+
+            android:textSize="14dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subject:"
+                android:layout_gravity="center"
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
+            <Spinner
+                android:id="@+id/spn_subjects"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+
+                android:layout_margin="15dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/spn_subjects_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="15dp"
+            android:text="You should choose a Subject for task."
+            android:gravity="center"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+
+
+
+
+    <Button
+        android:id="@+id/btn_edit_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Edit"
+        android:textSize="18sp" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
