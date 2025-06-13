@@ -29,24 +29,34 @@ public class ClassSubjectsAdapter extends RecyclerView.Adapter<ClassSubjectsAdap
     @NonNull
     @Override
     public SubjectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject_t, parent, false);
         return new SubjectViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SubjectViewHolder holder, int position) {
         Subject currentSubject = Subjects.get(position);
-        Log.d(TAG, "Subject Data: " + currentSubject.getName() + ", " + currentSubject.getId());
 
-
-        holder.SubjectNameTextView.append(currentSubject.getName());
-        holder.SubjectIdTextView.append(String.valueOf(currentSubject.getId()));
-        holder.SubjectDayTextView.append(String.valueOf(currentSubject.getDay()));
-        holder.SubjectStartTextView.append(currentSubject.getStartTime());
-        holder.SubjectEndTextView.append(currentSubject.getEndTime());
+        holder.SubjectNameTextView.setText("Subjec: " + currentSubject.getName());
+        holder.SubjectIdTextView.setText("ID: " + String.valueOf(currentSubject.getId()));
+        holder.SubjectDayTextView.setText("Day: " + convertNumberToDay(currentSubject.getDay()));
+        holder.SubjectStartTextView.setText("Start: " + currentSubject.getStartTime());
+        holder.SubjectEndTextView.setText("End: " + currentSubject.getEndTime());
 
     }
 
+    private String convertNumberToDay(int number) {
+        switch (number) {
+            case 1: return "Sunday";
+            case 2: return "Monday";
+            case 3: return "Tuesday";
+            case 4: return "Wednesday";
+            case 5: return "Thursday";
+            case 6: return "Friday";
+            case 7: return "Saturday";
+            default: return "Invalid day";
+        }
+    }
 
 
 
@@ -69,7 +79,6 @@ public class ClassSubjectsAdapter extends RecyclerView.Adapter<ClassSubjectsAdap
             SubjectDayTextView = itemView.findViewById(R.id.subject_day);
             SubjectStartTextView = itemView.findViewById(R.id.subject_start);
             SubjectEndTextView = itemView.findViewById(R.id.subject_end);
-
 
         }
 

@@ -1,47 +1,74 @@
 package com.example.androidschoolapp.activities.teacher;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidschoolapp.R;
+import com.example.androidschoolapp.activities.common.BaseActivity;
 import com.example.androidschoolapp.adapters.ClassSubjectsAdapter;
-import com.example.androidschoolapp.models.Subject;
+import com.example.androidschoolapp.api.ApiClient;
+import com.example.androidschoolapp.models.ClassSubject;
 
-import java.util.ArrayList;
-import java.util.List;
+public class SubjectsOfClassActivity extends BaseActivity {
 
-public class SubjectsOfClassActivity extends AppCompatActivity {
+    private TextView class_name_view;
+    private RecyclerView subjects_in_class;
 
-    private TextView className;
-    private TextView classId;
+    private ClassSubjectsAdapter adapter;
 
-    @SuppressLint("MissingInflatedId")
+    public SubjectsOfClassActivity() {
+        super("Class");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_class_subjects);
+        setupContentView(R.layout.activity_subjects_of_class, R.id.subjects_in_class_act);
 
-        List<Subject> subjectList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            subjectList.add(new Subject(i, ("one"+i), i,"start"+i,"end"+i));
 
-        }
-
-        className = findViewById(R.id.class_name);
-        classId = findViewById(R.id.class_id);
-
-        className.setText(getIntent().getStringExtra("CLASS_NAME"));
-        classId.setText(getIntent().getStringExtra("CLASS_ID"));
-
-        RecyclerView recyclerView = findViewById(R.id.subjects_for_class_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new ClassSubjectsAdapter(subjectList));
+        initializeViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
+
+    }
+
+    private void initializeViews() {
+        class_name_view = findViewById(R.id.class_name);
+        subjects_in_class = findViewById(R.id.subjects_in_class);
+        subjects_in_class.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void loadData() {
+
+        String class_id = getIntent().getStringExtra("CLASS_ID");
+        String class_name = getIntent().getStringExtra("CLASS_NAME");
+        class_name_view.setText(class_name);
+
+        apiClient.getSubjectsForClass(Integer.parseInt(class_id), new ApiClient.DataCallback<ClassSubject>() {
+            @Override
+            public void onSuccess(ClassSubject result) {
+                adapter = new ClassSubjectsAdapter(result.getSubjects());
+                subjects_in_class.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
+
+    }
 
 }

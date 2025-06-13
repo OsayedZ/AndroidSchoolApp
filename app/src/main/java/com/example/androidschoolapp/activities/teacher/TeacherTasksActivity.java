@@ -10,46 +10,48 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidschoolapp.R;
+import com.example.androidschoolapp.activities.common.BaseActivity;
 import com.example.androidschoolapp.adapters.TasksForTeacherAdapter;
 import com.example.androidschoolapp.models.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeacherTasksActivity extends AppCompatActivity {
+public class TeacherTasksActivity extends BaseActivity {
 
+    private RecyclerView tasks_recycler_view;
     private Button addBtn;
+
+    public TeacherTasksActivity() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_tasks);
 
-        List<Task> tasksList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            tasksList.add(new Task(("one" + i), "" + i, "" + i, "" + i));
 
-        }
+        initializeViews();
 
+//        recyclerView.setAdapter(new TasksForTeacherAdapter(tasksList));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadTasks();
+    }
+
+    private void initializeViews() {
         addBtn = findViewById(R.id.addBtn);
-
-        onClick(addBtn);
-
-        RecyclerView recyclerView = findViewById(R.id.tasks_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new TasksForTeacherAdapter(tasksList));
+        tasks_recycler_view = findViewById(R.id.tasks_recycler_view);
+        tasks_recycler_view.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void onClick(Button add) {
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(v.getContext(), CreateTaskActivity.class);
-
-
-                v.getContext().startActivity(intent);
-            }
-        });
+    private void loadTasks() {
+//        apiClient.getTeacherTasks();
+//        apiClient.getTasks();
     }
+
 }

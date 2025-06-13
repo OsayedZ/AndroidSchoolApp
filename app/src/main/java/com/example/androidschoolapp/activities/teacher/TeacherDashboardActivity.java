@@ -1,5 +1,6 @@
 package com.example.androidschoolapp.activities.teacher;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -41,18 +42,20 @@ public class TeacherDashboardActivity extends BaseActivity {
 
     private void setupClickListeners() {
         classesCard.setOnClickListener(v -> openClassesActivity());
+
+        //
         tasksCard.setOnClickListener(v -> openTasksActivity());
         scheduleCard.setOnClickListener(v -> openScheduleActivity());
     }
 
     private void openClassesActivity() {
-//        Intent intent = new Intent(TeacherDashboardActivity.this, TeacherClassesActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(TeacherDashboardActivity.this, TeacherClassesActivity.class);
+        startActivity(intent);
     }
 
     private void openTasksActivity() {
-//        Intent intent = new Intent(TeacherDashboardActivity.this, TeacherTasksActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(TeacherDashboardActivity.this, TeacherTasksActivity.class);
+        startActivity(intent);
     }
 
     private void openScheduleActivity() {

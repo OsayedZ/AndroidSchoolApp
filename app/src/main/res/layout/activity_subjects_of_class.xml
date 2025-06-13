@@ -2,11 +2,11 @@
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/students_in_class_act"
-    android:orientation="vertical"
+    android:id="@+id/subjects_in_class_act"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.teacher.StudentsInClassActivity">
+    android:orientation="vertical"
+    tools:context=".activities.teacher.SubjectsOfClassActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -23,11 +23,11 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:padding="15dp"
-        android:text="Subject"
+        android:text="Class"
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/students_in_class"
+        android:id="@+id/subjects_in_class"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidschoolapp.models.Class;
+import com.example.androidschoolapp.models.ClassSubject;
 import com.example.androidschoolapp.models.Subject;
 import com.example.androidschoolapp.models.Task;
 import com.example.androidschoolapp.models.User;
@@ -412,6 +413,49 @@ public class ApiClient {
                 });
     }
 
+
+    public void getTeacherTasks(int classId, final DataCallback<List<Task>> callback) {
+        makeApiRequest(Request.Method.GET, "/Tasks/Get.php",
+                null, true, new ApiResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            if (response.has("Status") && response.getString("Status").equals("Success")) {
+                                List<Task> tasksList = new ArrayList<>();
+
+                                if (response.has("Tasks")) {
+                                    JSONArray tasksArray = response.getJSONArray("Tasks");
+
+                                    for (int i = 0; i < tasksArray.length(); i++) {
+                                        JSONObject taskObject = tasksArray.getJSONObject(i);
+                                        Task task = new Task();
+
+                                        task.setName(taskObject.optString("Name", ""));
+                                        task.setTaskType(Task.TaskType.valueOf(taskObject.optString("Type", "")));
+                                        task.setDescription(taskObject.optString("Description"));
+                                        task.setDescription(taskObject.optString("SubjectID"));
+
+                                        tasksList.add(task);
+                                    }
+                                }
+
+                                callback.onSuccess(tasksList);
+                            } else {
+                                String message = response.optString("Message", "Failed to fetch subjects");
+                                callback.onError(message);
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Error parsing subjects response", e);
+                            callback.onError("Error parsing response: " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        callback.onError(errorMessage);
+                    }
+                });
+    }
 
     // Helper method to parse list responses
     private void parseListResponse(JSONObject response, String arrayKey, String errorMessage, 

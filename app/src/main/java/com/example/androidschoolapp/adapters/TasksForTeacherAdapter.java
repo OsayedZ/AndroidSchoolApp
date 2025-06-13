@@ -48,8 +48,6 @@ public class TasksForTeacherAdapter extends RecyclerView.Adapter<TasksForTeacher
 
 
         holder.editBtn.setOnClickListener( v -> {
-            Log.d(TAG, "Edit: " + currentTask.getName());
-
             Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
 
 
@@ -58,8 +56,6 @@ public class TasksForTeacherAdapter extends RecyclerView.Adapter<TasksForTeacher
         });
 
         holder.deleteBtn.setOnClickListener( v -> {
-            Log.d(TAG, "Delete: " + currentTask.getName());
-
 //            Intent intent = new Intent(v.getContext(), SubjectsOfTaskActivity.class);
 
 //            intent.putExtra("CLASS_NAME", currentTask.getName());
