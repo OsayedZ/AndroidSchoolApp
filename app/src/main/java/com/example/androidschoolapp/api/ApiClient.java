@@ -415,7 +415,7 @@ public class ApiClient {
     }
 
 
-    public void getTeacherTasks(int classId, final DataCallback<List<Task>> callback) {
+    public void getTeacherTasks(final DataCallback<List<Task>> callback) {
         makeApiRequest(Request.Method.GET, "/Tasks/Get.php",
                 null, true, new ApiResponseCallback() {
                     @Override
@@ -432,9 +432,10 @@ public class ApiClient {
                                         Task task = new Task();
 
                                         task.setName(taskObject.optString("Name", ""));
-                                        task.setTaskType(Task.TaskType.valueOf(taskObject.optString("Type", "")));
+                                        task.setType(taskObject.optString("Type", "Assignment"));
                                         task.setDescription(taskObject.optString("Description"));
-                                        task.setDescription(taskObject.optString("SubjectID"));
+
+                                        task.setSubjectId(taskObject.optInt("SubjectID"));
 
                                         tasksList.add(task);
                                     }
@@ -443,6 +444,98 @@ public class ApiClient {
                                 callback.onSuccess(tasksList);
                             } else {
                                 String message = response.optString("Message", "Failed to fetch subjects");
+                                callback.onError(message);
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Error parsing subjects response", e);
+                            callback.onError("Error parsing response: " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        callback.onError(errorMessage);
+                    }
+                });
+    }
+
+    public void getSubjectsForTeacher(final DataCallback<List<Subject>> callback) {
+        makeApiRequest(Request.Method.GET, "/Teachers/Subjects.php",
+                null, true, new ApiResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            if (response.has("Status") && response.getString("Status").equals("Success")) {
+                                List<Subject> subjectsList = new ArrayList<>();
+
+                                if (response.has("Subjects")) {
+                                    JSONArray subjectsArray = response.getJSONArray("Subjects");
+
+                                    for (int i = 0; i < subjectsArray.length(); i++) {
+                                        JSONObject subjectObject = subjectsArray.getJSONObject(i);
+                                        Subject subject = new Subject();
+
+                                        subject.setId(subjectObject.optInt("ID", 0));
+                                        subject.setName(subjectObject.optString("Name", ""));
+                                        subject.setTeacherName(subjectObject.optString("TeacherName", ""));
+                                        subject.setTeacherId(subjectObject.optInt("TeacherID", 0));
+                                        subject.setStartTime(subjectObject.optString("Start", ""));
+                                        subject.setEndTime(subjectObject.optString("End", ""));
+                                        subject.setDay(subjectObject.optInt("Day", 0));
+
+                                        subjectsList.add(subject);
+                                    }
+                                }
+
+                                callback.onSuccess(subjectsList);
+                            } else {
+                                String message = response.optString("Message", "Failed to fetch subjects");
+                                callback.onError(message);
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Error parsing subjects response", e);
+                            callback.onError("Error parsing response: " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        callback.onError(errorMessage);
+                    }
+                });
+    }
+
+
+    public void getStudentsForTask(String name, int subjectId, final DataCallback<List<Task>> callback) {
+        makeApiRequest(Request.Method.GET, "/Tasks/Students.php?taskName=" + name + "&subjectID=" + subjectId,
+                null, true, new ApiResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            if (response.has("Status") && response.getString("Status").equals("Success")) {
+                                List<Task> tasksList = new ArrayList<>();
+
+                                if (response.has("Tasks")) {
+                                    JSONArray tasksArray = response.getJSONArray("Tasks");
+
+                                    for (int i = 0; i < tasksArray.length(); i++) {
+                                        JSONObject taskObject = tasksArray.getJSONObject(i);
+                                        Task task = new Task();
+                                        task.setName(taskObject.getString("taskName"));
+                                        task.setUserId(taskObject.getInt("UserID"));
+                                        task.setStudentName(taskObject.getString("Name"));
+                                        task.setStudentEmail(taskObject.getString("Email"));
+                                        task.setAnswer(taskObject.getString("Answer"));
+                                        task.setMark(taskObject.getDouble("Mark"));
+                                        task.setSubjectId(taskObject.getInt("SubjectID"));
+
+                                        tasksList.add(task);
+                                    }
+                                }
+
+                                callback.onSuccess(tasksList);
+                            } else {
+                                String message = response.optString("Message", "Failed to fetch Tasks");
                                 callback.onError(message);
                             }
                         } catch (JSONException e) {

@@ -17,6 +17,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activities.teacher.TeacherGradeTask"
+            android:exported="false" />
+        <activity
+            android:name=".activities.teacher.TeacherManageTask"
+            android:exported="false" />
+        <activity
+            android:name=".activities.teacher.TeacherTasksActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.teacher.StudentsInClassActivity"
             android:exported="false" />
         <activity

@@ -65,6 +65,13 @@ public class Task {
     @Expose
     private String dueDate;
 
+    @SerializedName("StudentName")
+    @Expose
+    private String studentName;
+
+    @SerializedName("StudentEmail")
+    @Expose
+    private String studentEmail;
     
     // Constructors
     public Task() {
@@ -168,4 +175,20 @@ public class Task {
     public void setAnswer(String answer) {
         this.answer = answer;
     }
-} 
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getStudentEmail() {
+        return studentEmail;
+    }
+
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
+    }
+}
