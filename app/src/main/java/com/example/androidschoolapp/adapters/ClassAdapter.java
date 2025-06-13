@@ -1,9 +1,6 @@
 package com.example.androidschoolapp.adapters;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +30,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
     @NonNull
     @Override
     public ClassViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_class, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_class_teacher, parent, false);
         return new ClassViewHolder(view);
     }
 
@@ -41,25 +38,20 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
     public void onBindViewHolder(@NonNull ClassViewHolder holder, int position) {
         Class currentClass = classes.get(position);
         holder.classNameTextView.setText("Name: " + currentClass.getName());
-        holder.classIdTextView.setText("Id: " + currentClass.getId());
+        holder.classIdTextView.setText("ID: " + currentClass.getId());
 //        holder.studentsTextView.setText("Number Of Students: " + currentClass.getNumberOfStudent());
 //        holder.subjectsTextView.setText("Number Of Subjects" + currentClass.getNumberOfSubjects());
 
         holder.studentsBtn.setOnClickListener( v -> {
-//            Log.d(TAG, "onBindViewHolder: students " + currentClass.getID());
-
             Intent intent = new Intent(v.getContext(), StudentsInClassActivity.class);
 
             intent.putExtra("CLASS_NAME", currentClass.getName());
             intent.putExtra("CLASS_ID", String.valueOf(currentClass.getId()));
 
             v.getContext().startActivity(intent);
-
         });
 
         holder.subjectsBtn.setOnClickListener( v -> {
-            Log.d(TAG, "onBindViewHolder: subjects" + currentClass.getId());
-
             Intent intent = new Intent(v.getContext(), SubjectsOfClassActivity.class);
 
             intent.putExtra("CLASS_NAME", currentClass.getName());
@@ -71,7 +63,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
     @Override
     public int getItemCount() {
-        return classes.size(); // Fixed: Return the actual size of the list
+        return classes.size();
     }
 
     public static class ClassViewHolder extends RecyclerView.ViewHolder {

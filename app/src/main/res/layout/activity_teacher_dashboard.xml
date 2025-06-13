@@ -7,11 +7,22 @@
     android:layout_height="match_parent"
     tools:context=".activities.teacher.TeacherDashboardActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+        tools:ignore="MissingConstraints" />
+
+
     <TextView
         android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="60dp"
         android:text="Welcome, Teacher!"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +77,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:src="@android:drawable/ic_menu_slideshow"
-                    app:tint="@color/design_default_color_primary" />
+                    app:tint="@color/colorPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -100,7 +111,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:src="@android:drawable/ic_menu_edit"
-                    app:tint="@color/design_default_color_primary" />
+                    app:tint="@color/colorPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -134,7 +145,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:src="@android:drawable/ic_menu_today"
-                    app:tint="@color/design_default_color_primary" />
+                    app:tint="@color/colorPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -1,47 +1,70 @@
 package com.example.androidschoolapp.activities.teacher;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.androidschoolapp.R;
+import com.example.androidschoolapp.activities.common.BaseActivity;
 import com.example.androidschoolapp.adapters.ClassStudentsAdapter;
+import com.example.androidschoolapp.api.ApiClient;
 import com.example.androidschoolapp.models.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class StudentsInClassActivity extends AppCompatActivity {
+public class StudentsInClassActivity extends BaseActivity {
 
-    private TextView className;
-    private TextView classId;
+    private TextView class_name_view;
+    private ClassStudentsAdapter adapter;
+    private RecyclerView students_in_class;
+    public StudentsInClassActivity() {
+        super("Class");
+    }
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_students_in_class);
+        setupContentView(R.layout.activity_students_in_class, R.id.students_in_class_act);
 
-        List<User> studentsList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            studentsList.add(new User(i, ("one"+i), "email"+i));
-
-        }
-
-        className = findViewById(R.id.class_name);
-        classId = findViewById(R.id.class_id);
-
-        className.setText(getIntent().getStringExtra("CLASS_NAME"));
-        classId.setText(getIntent().getStringExtra("CLASS_ID"));
-
-        RecyclerView recyclerView = findViewById(R.id.students_in_class_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new ClassStudentsAdapter(studentsList));
+        initializeViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    private void initializeViews() {
+        class_name_view = findViewById(R.id.class_name);
+        students_in_class = findViewById(R.id.students_in_class);
+        students_in_class.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void loadData() {
+        String class_id = getIntent().getStringExtra("CLASS_ID");
+        String class_name = getIntent().getStringExtra("CLASS_NAME");
+        class_name_view.setText(class_name);
+
+        apiClient.getStudentsInClass(Integer.parseInt(class_id), new ApiClient.DataCallback<List<User>>() {
+            @Override
+            public void onSuccess(List<User> result) {
+                adapter = new ClassStudentsAdapter(result);
+                students_in_class.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
+
+    }
 }
