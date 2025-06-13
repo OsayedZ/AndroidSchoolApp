@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidschoolapp.R;
 import com.example.androidschoolapp.adapters.ClassAdapter;
-import com.example.androidschoolapp.models.ClassModel;
+import com.example.androidschoolapp.models.Class;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,9 @@ public class TeacherClassesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_classes);
 
-        List<ClassModel> classesList = new ArrayList<>();
+        List<Class> classesList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            classesList.add(new ClassModel(i, ("one"+i), ""+i,""+1));
+            classesList.add(new Class(i, ("one"+i), ""+i,""+1));
 
         }
 

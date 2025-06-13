@@ -7,7 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.androidschoolapp.models.ClassModel;
+import com.example.androidschoolapp.models.Class;
 import com.example.androidschoolapp.models.Subject;
 import com.example.androidschoolapp.models.Task;
 import com.example.androidschoolapp.models.User;
@@ -279,21 +279,21 @@ public class ApiClient {
     }
 
     // Teacher API Methods
-    public void getTeacherClasses(final DataCallback<List<ClassModel>> callback) {
+    public void getTeacherClasses(final DataCallback<List<Class>> callback) {
         makeApiRequest(Request.Method.GET, "/Classes/TeacherClasses.php", 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
                     if (response.has("Status") && response.getString("Status").equals("Success")) {
-                        List<ClassModel> classesList = new ArrayList<>();
+                        List<Class> classesList = new ArrayList<>();
                         
                         if (response.has("Classes")) {
                             JSONArray classesArray = response.getJSONArray("Classes");
                             
                             for (int i = 0; i < classesArray.length(); i++) {
                                 JSONObject classObject = classesArray.getJSONObject(i);
-                                ClassModel classItem = new ClassModel();
+                                Class classItem = new Class();
                                 
                                 classItem.setId(classObject.optInt("ID", 0));
                                 classItem.setName(classObject.optString("Name", ""));
@@ -588,21 +588,21 @@ public class ApiClient {
     // Registrar API methods
     
     // Method to get all classes
-    public void getClasses(final DataCallback<List<ClassModel>> callback) {
+    public void getClasses(final DataCallback<List<Class>> callback) {
         makeApiRequest(Request.Method.GET, "/Classes/Get.php", 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
                     if (response.has("Status") && response.getString("Status").equals("Success")) {
-                        List<ClassModel> classesList = new ArrayList<>();
+                        List<Class> classesList = new ArrayList<>();
                         
                         if (response.has("Classes")) {
                             JSONArray classesArray = response.getJSONArray("Classes");
                             
                             for (int i = 0; i < classesArray.length(); i++) {
                                 JSONObject classObject = classesArray.getJSONObject(i);
-                                ClassModel classItem = new ClassModel();
+                                Class classItem = new Class();
                                 
                                 classItem.setId(classObject.optInt("ID", 0));
                                 classItem.setName(classObject.optString("Name", ""));
@@ -630,7 +630,7 @@ public class ApiClient {
     }
     
     // Method to add a class
-    public void addClass(ClassModel classItem, final DataCallback<String> callback) {
+    public void addClass(Class classItem, final DataCallback<String> callback) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("Name", classItem.getName());
@@ -654,7 +654,7 @@ public class ApiClient {
     }
     
     // Method to edit a class
-    public void editClass(ClassModel classItem, final DataCallback<String> callback) {
+    public void editClass(Class classItem, final DataCallback<String> callback) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("Name", classItem.getName());

@@ -1,5 +1,6 @@
 package com.example.androidschoolapp.activities.teacher;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class SubjectsOfClassActivity extends AppCompatActivity {
     private TextView className;
     private TextView classId;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

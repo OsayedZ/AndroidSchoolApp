@@ -2,8 +2,6 @@ package com.example.androidschoolapp.adapters;
 
 import static android.content.ContentValues.TAG;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,16 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidschoolapp.R;
 import com.example.androidschoolapp.activities.teacher.StudentsInClassActivity;
 import com.example.androidschoolapp.activities.teacher.SubjectsOfClassActivity;
-import com.example.androidschoolapp.models.ClassModel;
+import com.example.androidschoolapp.models.Class;
 
 import java.util.List;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHolder> {
 
-    private List<ClassModel> classes;
+    private List<Class> classes;
 
 
-    public ClassAdapter(List<ClassModel> classes) {
+    public ClassAdapter(List<Class> classes) {
         this.classes = classes;
     }
 
@@ -42,7 +39,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ClassViewHolder holder, int position) {
-        ClassModel currentClass = classes.get(position);
+        Class currentClass = classes.get(position);
         holder.classNameTextView.setText("Name: " + currentClass.getName());
         holder.classIdTextView.setText("Id: " + currentClass.getId());
 //        holder.studentsTextView.setText("Number Of Students: " + currentClass.getNumberOfStudent());

@@ -67,7 +67,7 @@
             android:name=".activities.registrar.RegistrarDashboardActivity"
             android:exported="false" />
 
-        
+
         <!-- Teacher Activities -->
         <activity
             android:name=".activities.teacher.TeacherDashboardActivity"

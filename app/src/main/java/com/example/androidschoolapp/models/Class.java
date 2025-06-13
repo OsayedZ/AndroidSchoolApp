@@ -3,7 +3,7 @@ package com.example.androidschoolapp.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClassModel {
+public class Class {
     @SerializedName("ID")
     @Expose
     private int id;
@@ -21,15 +21,15 @@ public class ClassModel {
     private String numberOfSubjects;
 
     // Constructors
-    public ClassModel() {
+    public Class() {
     }
 
-    public ClassModel(int id, String name) {
+    public Class(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public ClassModel(int id, String name, String numberOfStudent, String numberOfSubjects) {
+    public Class(int id, String name, String numberOfStudent, String numberOfSubjects) {
         this.id = id;
         this.name = name;
         this.numberOfStudent = numberOfStudent;
