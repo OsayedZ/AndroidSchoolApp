@@ -46,7 +46,7 @@
                 android:id="@+id/num_of_students"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Number of Students:"
+                android:text="View Students:"
                 android:textSize="18dp" />
 
             <Space
@@ -73,7 +73,7 @@
                 android:id="@+id/num_of_subjects"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Number of Subjects:"
+                android:text="View Subjects:"
                 android:textSize="18dp" />
 
             <Space

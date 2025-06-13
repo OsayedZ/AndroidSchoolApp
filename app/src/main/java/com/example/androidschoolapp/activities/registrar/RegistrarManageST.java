@@ -170,7 +170,6 @@ public class RegistrarManageST extends BaseActivity {
             edt_gender.setText(selected_user.getGenderString());
 
             String userRole = selected_user.getRole();
-            showToast(userRole);
 
             for (int i = 0; i < roles.size(); i++) {
                 if (roles.get(i).equalsIgnoreCase(userRole)) {

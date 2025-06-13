@@ -1,32 +1,38 @@
 package com.example.androidschoolapp.adapters;
 
-import static android.content.ContentValues.TAG;
-
+import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidschoolapp.R;
-import com.example.androidschoolapp.activities.teacher.EditTaskActivity;
+import com.example.androidschoolapp.activities.teacher.TeacherGradeTask;
+import com.example.androidschoolapp.activities.teacher.TeacherManageTask;
+import com.example.androidschoolapp.api.ApiClient;
 import com.example.androidschoolapp.models.Task;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 public class TasksForTeacherAdapter extends RecyclerView.Adapter<TasksForTeacherAdapter.TaskViewHolder>{
 
 
+    private Context context;
     private List<Task> tasks;
 
+    private ApiClient apiClient;
 
-    public TasksForTeacherAdapter(List<Task> tasks) {
+    public TasksForTeacherAdapter(Context context, List<Task> tasks) {
         this.tasks = tasks;
+        this.context = context;
+        this.apiClient = ApiClient.getInstance(context);
     }
 
     @NonNull
@@ -39,38 +45,60 @@ public class TasksForTeacherAdapter extends RecyclerView.Adapter<TasksForTeacher
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task currentTask = tasks.get(position);
-        Log.d(TAG, "onBindViewHolder: " +currentTask.getName());
-        holder.taskNameTextView.append(currentTask.getName());
-        holder.taskDescTextView.append(currentTask.getDescription());
-        holder.taskTypeTextView.append(currentTask.getType());
-//        holder.taskDueDateTextView.append(currentTask.getDueDate());
+
+        holder.taskNameTextView.setText("Task: " + currentTask.getName());
+        holder.taskDescTextView.setText("Description: " + currentTask.getDescription());
+        holder.taskTypeTextView.setText("Type: " + currentTask.getType());
+        holder.taskDueDateTextView.setText("");
 
 
+        holder.task_card.setOnClickListener(e -> {
+            Intent intent = new Intent(context, TeacherGradeTask.class);
+            intent.putExtra("task_name", currentTask.getName());
+            intent.putExtra("subject_id", currentTask.getSubjectId());
+            context.startActivity(intent);
+        });
 
         holder.editBtn.setOnClickListener( v -> {
-            Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
+            Intent intent = new Intent(v.getContext(), TeacherManageTask.class);
+            Gson gson = new Gson();
 
-
-            v.getContext().startActivity(intent);
-
+            intent.putExtra("Edit", true);
+            intent.putExtra("Task", gson.toJson(currentTask));
+            context.startActivity(intent);
         });
 
         holder.deleteBtn.setOnClickListener( v -> {
-//            Intent intent = new Intent(v.getContext(), SubjectsOfTaskActivity.class);
+            Task task = new Task();
+            task.setSubjectId(currentTask.getSubjectId());
+            task.setName(currentTask.getName());
 
-//            intent.putExtra("CLASS_NAME", currentTask.getName());
-//            intent.putExtra("CLASS_ID", String.valueOf(currentTask.getID()));
-//
-//            v.getContext().startActivity(intent);
+            apiClient.deleteTask(task, new ApiClient.DataCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    int currentPosition = holder.getAdapterPosition();
+                    if (currentPosition != RecyclerView.NO_POSITION) {
+                        tasks.remove(currentPosition);
+                        notifyItemRemoved(currentPosition);
+                    }
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+
+                }
+            });
         });
     }
 
     @Override
     public int getItemCount() {
-        return tasks.size(); // Fixed: Return the actual size of the list
+        return tasks.size();
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
+
+        LinearLayout task_card;
         TextView taskNameTextView;
         TextView taskDescTextView;
         TextView taskTypeTextView;
@@ -81,6 +109,7 @@ public class TasksForTeacherAdapter extends RecyclerView.Adapter<TasksForTeacher
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
+            task_card = itemView.findViewById(R.id.task_card);
             taskNameTextView = itemView.findViewById(R.id.task_name);
             taskDescTextView = itemView.findViewById(R.id.task_description);
             taskTypeTextView = itemView.findViewById(R.id.task_type);
