@@ -7,8 +7,7 @@
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="3dp"
-    app:cardBackgroundColor="@color/background_white"
-    android:foreground="?android:attr/selectableItemBackground">
+    app:cardBackgroundColor="@color/background_white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +22,7 @@
             android:layout_marginBottom="12dp">
 
             <TextView
-                android:id="@+id/task_name"
+                android:id="@+id/grade_task_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -32,21 +31,41 @@
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
-            <TextView
-                android:id="@+id/task_type"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/badge_background"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:text="Assignment"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/grade_task_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/badge_background"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:text="Assignment"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/grade_mark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/grade_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="85%"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
-            android:id="@+id/task_description"
+            android:id="@+id/grade_task_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
@@ -65,25 +84,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
-                android:id="@+id/task_due_date"
+                android:id="@+id/grade_subject_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Due: 2023-05-15"
+                android:text="Subject: Mathematics"
                 android:textAppearance="?attr/textAppearanceCaption"
-                android:textColor="@color/text_hint"
-                android:visibility="gone" />
+                android:textColor="@color/text_hint" />
 
             <TextView
-                android:id="@+id/task_status"
+                android:id="@+id/grade_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Status: Not Submitted"
+                android:text="Graded"
                 android:textAppearance="?attr/textAppearanceCaption"
                 android:textStyle="bold"
+                android:textColor="@color/success"
                 android:drawablePadding="4dp" />
         </LinearLayout>
     </LinearLayout>

@@ -86,4 +86,13 @@
     <style name="Theme.AndroidSchoolApp.AppBarOverlay"
         parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.AndroidSchoolApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    
+    <!-- Splash screen theme -->
+    <style name="SplashTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_gradient_background</item>
+        <item name="android:statusBarColor">@color/gradient_primary_start</item>
+        <item name="android:navigationBarColor">@color/gradient_primary_end</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.androidschoolapp.activities.student;
+package com.example.androidschoolapp.activities.teacher;
 
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class StudentScheduleActivity extends BaseActivity {
+public class TeacherScheduleActivity extends BaseActivity {
     
     private RecyclerView scheduleRecyclerView;
     private ScheduleAdapter scheduleAdapter;
@@ -39,14 +39,14 @@ public class StudentScheduleActivity extends BaseActivity {
     private List<DateUtils.DayItem> dayItems;
     private int selectedDayIndex = -1;
 
-    public StudentScheduleActivity() {
+    public TeacherScheduleActivity() {
         super("Schedule");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupContentView(R.layout.activity_student_schedule, R.id.student_schedule_root);
+        setupContentView(R.layout.activity_teacher_schedule, R.id.teacher_schedule_root);
         
         initializeViews();
         setupDaySelector();
@@ -149,7 +149,7 @@ public class StudentScheduleActivity extends BaseActivity {
     private void loadScheduleData() {
         showLoading(true);
         
-        apiClient.getStudentSchedule(new ApiClient.DataCallback<List<Subject>>() {
+        apiClient.getTeacherSchedule(new ApiClient.DataCallback<List<Subject>>() {
             @Override
             public void onSuccess(List<Subject> result) {
                 runOnUiThread(() -> {
@@ -172,7 +172,7 @@ public class StudentScheduleActivity extends BaseActivity {
                 runOnUiThread(() -> {
                     showLoading(false);
                     showEmptyState(true);
-                    Toast.makeText(StudentScheduleActivity.this, 
+                    Toast.makeText(TeacherScheduleActivity.this, 
                         "Failed to load schedule: " + errorMessage, Toast.LENGTH_LONG).show();
                 });
             }
@@ -213,4 +213,4 @@ public class StudentScheduleActivity extends BaseActivity {
         emptyView.setVisibility(show ? View.VISIBLE : View.GONE);
         scheduleRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
-}
+} 

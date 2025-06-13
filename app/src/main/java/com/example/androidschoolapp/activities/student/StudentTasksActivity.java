@@ -50,11 +50,11 @@ public class StudentTasksActivity extends BaseActivity {
             String taskTitle = task.getName();
             String taskDescription = task.getDescription();
             String taskType = task.getType();
+            String taskAnswer = task.getAnswer(); // Get existing answer if any
             
             if (taskTitle != null) {
-                Log.d("Test", "test");
-
-                navigateToTaskDetail(String.valueOf(taskId), taskTitle, taskDescription, taskType);
+                Log.d("TasksActivity", "Opening task: " + taskTitle);
+                navigateToTaskDetail(String.valueOf(taskId), taskTitle, taskDescription, taskType, taskAnswer);
             }
         });
 
@@ -65,26 +65,24 @@ public class StudentTasksActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload tasks when coming back to this activity
+
         if (isDataLoaded) {
             loadTasks();
         }
     }
 
     private void navigateToTaskDetail(String taskId, String taskTitle, String taskDescription, 
-                                     String taskType) {
+                                     String taskType, String taskAnswer) {
         Intent intent = new Intent(this, TaskDetailActivity.class);
         intent.putExtra("task_id", taskId);
         intent.putExtra("task_title", taskTitle);
         intent.putExtra("task_description", taskDescription);
         intent.putExtra("task_type", taskType);
+        intent.putExtra("task_answer", taskAnswer); // Pass existing answer
         startActivity(intent);
     }
 
     private void loadTasks() {
-        // Show loading indicator if needed
-        // You could show a ProgressBar here if desired
-
         apiClient.getStudentTasks(
                 new ApiClient.DataCallback<List<Task>>() {
                     @Override

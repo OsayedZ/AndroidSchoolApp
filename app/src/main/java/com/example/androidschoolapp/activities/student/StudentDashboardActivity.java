@@ -8,14 +8,15 @@ import androidx.cardview.widget.CardView;
 
 import com.example.androidschoolapp.R;
 import com.example.androidschoolapp.activities.common.BaseActivity;
+import com.example.androidschoolapp.api.SessionManager;
 
 public class StudentDashboardActivity extends BaseActivity {
 
-    private CardView tasksCard, scheduleCard, gradesCard, submissionsCard;
-    private TextView welcomeText;
+    private CardView tasksCard, scheduleCard, gradesCard;
+    private TextView welcomeText, userEmailText;
     
     public StudentDashboardActivity() {
-        super();
+        super("Dashboard");
     }
 
     @Override
@@ -25,27 +26,40 @@ public class StudentDashboardActivity extends BaseActivity {
 
         initializeViews();
         setupClickListeners();
-        
-        // Get email from intent
-        String email = getIntent().getStringExtra("USER_EMAIL");
-        if (email != null) {
-            welcomeText.setText("Welcome, " + email + "!");
-        }
+        setupUserInfo();
     }
 
     private void initializeViews() {
         welcomeText = findViewById(R.id.welcome_text);
+        userEmailText = findViewById(R.id.user_email_text);
         tasksCard = findViewById(R.id.tasks_card);
         scheduleCard = findViewById(R.id.schedule_card);
         gradesCard = findViewById(R.id.grades_card);
-        submissionsCard = findViewById(R.id.submissions_card);
     }
 
     private void setupClickListeners() {
         tasksCard.setOnClickListener(v -> openTasksActivity());
         scheduleCard.setOnClickListener(v -> openScheduleActivity());
         gradesCard.setOnClickListener(v -> openGradesActivity());
-        submissionsCard.setOnClickListener(v -> openSubmissionsActivity());
+    }
+
+    private void setupUserInfo() {
+        // Get email from session or intent
+        String email = sessionManager.getEmail();
+        if (email == null || email.isEmpty()) {
+            email = getIntent().getStringExtra("USER_EMAIL");
+        }
+        
+        if (email != null && !email.isEmpty()) {
+            userEmailText.setText(email);
+            // Extract name from email for welcome message
+            String name = email.split("@")[0];
+            String capitalizedName = name.substring(0, 1).toUpperCase() + name.substring(1);
+            welcomeText.setText("Welcome back, " + capitalizedName + "!");
+        } else {
+            welcomeText.setText("Welcome back!");
+            userEmailText.setText("");
+        }
     }
 
     private void openTasksActivity() {
@@ -63,8 +77,4 @@ public class StudentDashboardActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    private void openSubmissionsActivity() {
-        Intent intent = new Intent(StudentDashboardActivity.this, StudentSubmissionsActivity.class);
-        startActivity(intent);
-    }
 }

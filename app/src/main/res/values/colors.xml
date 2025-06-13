@@ -54,4 +54,31 @@
     <color name="transparent">#00000000</color>
     <color name="semi_transparent_black">#80000000</color>
     <color name="semi_transparent_white">#80FFFFFF</color>
+    
+    <!-- Schedule-specific colors -->
+    <color name="schedule_background">@color/background_light</color>
+    <color name="schedule_card_background">@color/background_white</color>
+    <color name="schedule_text_primary">@color/text_primary</color>
+    <color name="schedule_text_secondary">@color/text_secondary</color>
+    <color name="schedule_time_text">@color/text_hint</color>
+    <color name="schedule_subject_default">@color/primary_blue</color>
+    <color name="schedule_room_background">@color/background_light</color>
+    <color name="schedule_teacher_text">@color/text_secondary</color>
+    <color name="schedule_now_indicator">@color/accent_green</color>
+    
+    <!-- Dashboard-specific colors -->
+    <color name="dashboard_background">@color/background_light</color>
+    <color name="dashboard_text_secondary">#E3F2FD</color>
+    
+    <!-- Dashboard gradient colors -->
+    <color name="gradient_primary_start">#1976D2</color>
+    <color name="gradient_primary_end">#1565C0</color>
+    
+    <!-- Card gradient colors -->
+    <color name="gradient_tasks_start">#FF6B6B</color>
+    <color name="gradient_tasks_end">#EE5A24</color>
+    <color name="gradient_schedule_start">#4ECDC4</color>
+    <color name="gradient_schedule_end">#00A8A8</color>
+    <color name="gradient_grades_start">#45B7D1</color>
+    <color name="gradient_grades_end">#3867D6</color>
 </resources>

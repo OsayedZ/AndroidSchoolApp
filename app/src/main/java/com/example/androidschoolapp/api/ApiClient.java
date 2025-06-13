@@ -247,6 +247,7 @@ public class ApiClient {
     public void submitTask(Task task, final DataCallback<String> callback) {
         try {
             Map<String, String> params = new HashMap<>();
+            params.put("TaskID", String.valueOf(task.getId()));
             params.put("Answer", task.getAnswer());
             
             makeApiRequest(Request.Method.POST, "/Tasks/SubmitTask.php", 

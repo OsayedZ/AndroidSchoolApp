@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidschoolapp.R;
@@ -54,8 +55,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         // Due date not available in the current Task model
         holder.taskDueDateTextView.setVisibility(View.GONE);
         
-        // Hide status view - not needed for student tasks
-        holder.taskStatusTextView.setVisibility(View.GONE);
+        // Show submission status
+        String answer = task.getAnswer();
+        boolean isSubmitted = answer != null && !answer.trim().isEmpty();
+        
+        holder.taskStatusTextView.setVisibility(View.VISIBLE);
+        if (isSubmitted) {
+            holder.taskStatusTextView.setText("Status: Submitted");
+            holder.taskStatusTextView.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.success));
+        } else {
+            holder.taskStatusTextView.setText("Status: Not Submitted");
+            holder.taskStatusTextView.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.warning));
+        }
 
         // Set click listener
         holder.itemView.setOnClickListener(v -> {

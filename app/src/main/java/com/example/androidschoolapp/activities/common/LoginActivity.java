@@ -14,6 +14,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonObject;
 
 public class LoginActivity extends BaseActivity {
 
@@ -91,7 +92,6 @@ public class LoginActivity extends BaseActivity {
         // Show loading state
         loginButton.setEnabled(false);
         loginButton.setText("Signing in...");
-
         login(email, password);
     }
 
@@ -125,6 +125,8 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onError(String errorMessage) {
+                        showToast("Invalid credentials!");
+
                         resetLoginButton();
                         endLoading();
                     }
