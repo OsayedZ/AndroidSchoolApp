@@ -1,34 +1,24 @@
 package com.example.androidschoolapp.api;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidschoolapp.models.Class;
-import com.example.androidschoolapp.models.ClassSubject;
 import com.example.androidschoolapp.models.Subject;
 import com.example.androidschoolapp.models.Task;
-import com.example.androidschoolapp.models.Test;
 import com.example.androidschoolapp.models.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -376,6 +366,53 @@ public class ApiClient {
         });
     }
 
+
+    public void getSubjectsForClass(int classId, final DataCallback<ClassSubject> callback) {
+        makeApiRequest(Request.Method.GET, "/Classes/Subjects.php?classID=" + classId,
+                null, true, new ApiResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            if (response.has("Status") && response.getString("Status").equals("Success")) {
+                                List<Subject> subjectsList = new ArrayList<>();
+
+                                if (response.has("Subjects")) {
+                                    JSONArray subjectsArray = response.getJSONArray("Subjects");
+
+                                    for (int i = 0; i < subjectsArray.length(); i++) {
+                                        JSONObject subjectObject = subjectsArray.getJSONObject(i);
+                                        Subject subject = new Subject();
+
+                                        subject.setId(subjectObject.optInt("SubjectID", 0));
+                                        subject.setName(subjectObject.optString("Name", ""));
+                                        subject.setTeacherId(subjectObject.optInt("TeacherID"));
+                                        subject.setStartTime(subjectObject.optString("Start",""));
+                                        subject.setEndTime(subjectObject.optString("End",""));
+                                        subject.setDay(subjectObject.optInt("Day"));
+
+                                        subjectsList.add(subject);
+                                    }
+                                }
+
+                                callback.onSuccess(new ClassSubject(0, subjectsList, classId));
+                            } else {
+                                String message = response.optString("Message", "Failed to fetch subjects");
+                                callback.onError(message);
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Error parsing subjects response", e);
+                            callback.onError("Error parsing response: " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        callback.onError(errorMessage);
+                    }
+                });
+    }
+
+
     // Helper method to parse list responses
     private void parseListResponse(JSONObject response, String arrayKey, String errorMessage, 
                                   DataCallback<List<Map<String, String>>> callback) {
@@ -532,6 +569,66 @@ public class ApiClient {
             Log.e(TAG, "Error creating grade task request", e);
             callback.onError("Error creating request: " + e.getMessage());
         }
+    }
+
+    // Method to get all teachers
+    public void getTeachers(final DataCallback<List<User>> callback) {
+        makeApiRequest(Request.Method.GET, "/Teachers/Get.php",
+                null, true, new ApiResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            if (response.has("Status") && response.getString("Status").equals("Success")) {
+                                List<User> teachersList = new ArrayList<>();
+
+                                if (response.has("Teachers")) {
+                                    JSONArray teachersArray = response.getJSONArray("Teachers");
+
+                                    for (int i = 0; i < teachersArray.length(); i++) {
+                                        JSONObject teacherObject = teachersArray.getJSONObject(i);
+                                        User teacherItem = new User();
+
+                                        teacherItem.setId(teacherObject.optInt("ID"));
+                                        teacherItem.setName(teacherObject.optString("Name", ""));
+                                        teacherItem.setEmail(teacherObject.optString("Email", ""));
+                                        teacherItem.setAge(teacherObject.optInt("Age", 0));
+
+                                        // Handle gender (from string or int)
+                                        if (teacherObject.has("Gender")) {
+                                            try {
+                                                // Try to parse as integer
+                                                int genderInt = teacherObject.getInt("Gender");
+                                                teacherItem.setGender(genderInt == 1);
+                                            } catch (JSONException e) {
+                                                // Try to parse as string
+                                                String genderStr = teacherObject.getString("Gender");
+                                                teacherItem.setGender(genderStr.equalsIgnoreCase("Male") || genderStr.equals("1"));
+                                            }
+                                        }
+
+                                        teacherItem.setClassId(teacherObject.optInt("ClassID", 0));
+                                        teacherItem.setRole("Teacher");
+
+                                        teachersList.add(teacherItem);
+                                    }
+                                }
+
+                                callback.onSuccess(teachersList);
+                            } else {
+                                String message = response.optString("Message", "Failed to fetch classes");
+                                callback.onError(message);
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Error parsing classes response", e);
+                            callback.onError("Error parsing response: " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        callback.onError(errorMessage);
+                    }
+                });
     }
     
     // Method to get teacher schedule
@@ -728,7 +825,8 @@ public class ApiClient {
                             for (int i = 0; i < studentsArray.length(); i++) {
                                 JSONObject studentObject = studentsArray.getJSONObject(i);
                                 User student = new User();
-                                
+
+                                student.setId(studentObject.optInt("ID"));
                                 student.setName(studentObject.optString("Name", ""));
                                 student.setEmail(studentObject.optString("Email", ""));
                                 student.setAge(studentObject.optInt("Age", 0));
@@ -898,6 +996,7 @@ public class ApiClient {
                                 
                                 subject.setId(subjectObject.optInt("ID", 0));
                                 subject.setName(subjectObject.optString("Name", ""));
+                                subject.setTeacherName(subjectObject.optString("TeacherName", ""));
                                 subject.setTeacherId(subjectObject.optInt("TeacherID", 0));
                                 subject.setStartTime(subjectObject.optString("Start", ""));
                                 subject.setEndTime(subjectObject.optString("End", ""));
@@ -1037,7 +1136,7 @@ public class ApiClient {
             Map<String, String> params = new HashMap<>();
             params.put("SubjectID", String.valueOf(subjectId));
             params.put("ClassID", String.valueOf(classId));
-            
+
             makeApiRequest(Request.Method.POST, "/Classes/UnassignSubject.php", 
                           params, true, new ApiResponseCallback() {
                 @Override

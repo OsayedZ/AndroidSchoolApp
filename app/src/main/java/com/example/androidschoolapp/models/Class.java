@@ -12,6 +12,14 @@ public class Class {
     @Expose
     private String name;
 
+    @SerializedName("NumberOfStudent")
+    @Expose
+    private String numberOfStudent;
+
+    @SerializedName("NumberOfSubjects")
+    @Expose
+    private String numberOfSubjects;
+
     // Constructors
     public Class() {
     }
@@ -19,6 +27,29 @@ public class Class {
     public Class(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Class(int id, String name, String numberOfStudent, String numberOfSubjects) {
+        this.id = id;
+        this.name = name;
+        this.numberOfStudent = numberOfStudent;
+        this.numberOfSubjects = numberOfSubjects;
+    }
+
+    public String getNumberOfStudent() {
+        return numberOfStudent;
+    }
+
+    public void setNumberOfStudent(String numberOfStudent) {
+        this.numberOfStudent = numberOfStudent;
+    }
+
+    public String getNumberOfSubjects() {
+        return numberOfSubjects;
+    }
+
+    public void setNumberOfSubjects(String numberOfSubjects) {
+        this.numberOfSubjects = numberOfSubjects;
     }
 
     // Getters and Setters

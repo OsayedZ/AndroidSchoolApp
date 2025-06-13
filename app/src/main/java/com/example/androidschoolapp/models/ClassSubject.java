@@ -3,14 +3,16 @@ package com.example.androidschoolapp.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ClassSubject {
     @SerializedName("ID")
     @Expose
     private int id;
 
-    @SerializedName("SubjectID")
+    @SerializedName("Subjects")
     @Expose
-    private int subjectId;
+    private List<Subject> subjects;
 
     @SerializedName("ClassID")
     @Expose
@@ -20,9 +22,9 @@ public class ClassSubject {
     public ClassSubject() {
     }
 
-    public ClassSubject(int id, int subjectId, int classId) {
+    public ClassSubject(int id, List<Subject> subjects, int classId) {
         this.id = id;
-        this.subjectId = subjectId;
+        this.subjects = subjects;
         this.classId = classId;
     }
 
@@ -35,12 +37,12 @@ public class ClassSubject {
         this.id = id;
     }
 
-    public int getSubjectId() {
-        return subjectId;
+    public List<Subject> getSubjects() {
+        return subjects;
     }
 
-    public void setSubjectId(int subjectId) {
-        this.subjectId = subjectId;
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
     }
 
     public int getClassId() {

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Task {
+
     public enum TaskType {
         ASSIGNMENT("Assignment"),
         EXAM("Exam");
@@ -59,6 +60,11 @@ public class Task {
     @SerializedName("Answer")
     @Expose
     private String answer;
+
+    @SerializedName("Due")
+    @Expose
+    private String dueDate;
+
     
     // Constructors
     public Task() {
@@ -74,7 +80,22 @@ public class Task {
         this.name = name;
         this.answer = answer;
     }
-    
+
+    public Task(String name, String type, String description, String dueDate) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.dueDate = dueDate;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+
     // Getters and Setters
     public int getId() {
         return id;
