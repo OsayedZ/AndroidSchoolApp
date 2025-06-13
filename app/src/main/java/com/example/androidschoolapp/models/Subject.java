@@ -12,6 +12,10 @@ public class Subject {
     @Expose
     private String name;
 
+    @SerializedName("TeacherName")
+    @Expose
+    private String teacherName;
+
     @SerializedName("TeacherID")
     @Expose
     private int teacherId;
@@ -32,10 +36,11 @@ public class Subject {
     public Subject() {
     }
 
-    public Subject(int id, String name, int teacherId, String startTime, String endTime, int day) {
+    public Subject(int id, String name, String teacherName, int teacherId, String startTime, String endTime, int day) {
         this.id = id;
         this.name = name;
         this.teacherId = teacherId;
+        this.teacherName = teacherName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.day = day;
@@ -71,6 +76,14 @@ public class Subject {
 
     public void setTeacherId(int teacherId) {
         this.teacherId = teacherId;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 
     public String getStartTime() {

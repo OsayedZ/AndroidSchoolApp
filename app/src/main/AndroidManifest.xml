@@ -16,82 +16,81 @@
         android:theme="@style/Theme.AndroidSchoolApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        
-        <!-- Login Activity - Launcher Activity -->
+        <activity
+            android:name=".activities.registrar.RegistrarAssignClass"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarTeachersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarManageST"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarStudentsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarAssignTeacher"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarClass"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarManageSubject"
+            android:exported="false"
+            android:label="@string/title_activity_registrar_manage_subject"
+            android:resizeableActivity="true"
+            android:theme="@style/Theme.AndroidSchoolApp.NoActionBar"
+            tools:targetApi="24" />
+        <activity
+            android:name=".activities.registrar.RegistrarSubjectsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarManageClass"
+            android:exported="false" />
+        <activity
+            android:name=".activities.registrar.RegistrarClassesActivity"
+            android:exported="false" /> <!-- Login Activity - Launcher Activity -->
         <activity
             android:name=".activities.common.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-          <!-- Main Activity - After Login -->
+        </activity> <!-- Main Activity - After Login -->
         <activity
             android:name=".activities.common.MainActivity"
-            android:exported="false" />
-            
-        <!-- Student Activities -->
+            android:exported="false" /> <!-- Student Activities -->
         <activity
             android:name=".activities.student.StudentDashboardActivity"
             android:exported="false" />
-            
         <activity
             android:name=".activities.student.StudentTasksActivity"
             android:exported="false"
             android:parentActivityName=".activities.student.StudentDashboardActivity" />
-            
         <activity
             android:name=".activities.student.TaskDetailActivity"
             android:exported="false"
             android:parentActivityName=".activities.student.StudentTasksActivity" />
-            
         <activity
             android:name=".activities.student.StudentScheduleActivity"
             android:exported="false"
             android:parentActivityName=".activities.student.StudentDashboardActivity" />
-            
         <activity
             android:name=".activities.student.StudentGradesActivity"
             android:exported="false"
             android:parentActivityName=".activities.student.StudentDashboardActivity" />
-              <activity
+        <activity
             android:name=".activities.student.StudentSubmissionsActivity"
             android:exported="false"
-            android:parentActivityName=".activities.student.StudentDashboardActivity" />
-
-
-            
-        <!-- Registrar Activities -->
+            android:parentActivityName=".activities.student.StudentDashboardActivity" /> <!-- Teacher Activities -->
+        <activity
+            android:name=".activities.teacher.TeacherDashboardActivity"
+            android:exported="false" /> <!-- Registrar Activities -->
         <activity
             android:name=".activities.registrar.RegistrarDashboardActivity"
             android:exported="false" />
-
-
-        <!-- Teacher Activities -->
-        <activity
-            android:name=".activities.teacher.TeacherDashboardActivity"
-            android:exported="false" />
-
-        <activity android:name=".activities.teacher.TeacherClassesActivity"
-            android:exported="false" />
-
-        <activity android:name=".activities.teacher.StudentsInClassActivity"
-            android:exported="false" />
-
-        <activity android:name=".activities.teacher.SubjectsOfClassActivity"
-            android:exported="false" />
-
-        <activity android:name=".activities.teacher.TeacherTasksActivity"
-            android:exported="false"/>
-
-        <activity android:name=".activities.teacher.CreateTaskActivity"
-            android:exported="false"/>
-
-        <activity android:name=".activities.teacher.EditTaskActivity"
-            android:exported="false"/>
-
-
     </application>
 
 </manifest>

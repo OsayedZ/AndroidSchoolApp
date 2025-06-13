@@ -1,76 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/subject_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="4dp"
+    android:background="@drawable/subject_card_border">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/subject_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:text="Subject: "
-                android:textAppearance="?attr/textAppearanceHeadline6" />
-
-            <TextView
-                android:id="@+id/subject_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text=" ID: "
-                android:textAppearance="?attr/textAppearanceHeadline6" />
-        </LinearLayout>
-
-
+        <!-- Subject Name -->
         <TextView
-            android:id="@+id/subject_day"
+            android:id="@+id/subject_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Day: "
-            android:textAppearance="?attr/textAppearanceHeadline6" />
+            android:text=""
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@android:color/black" />
 
+        <!-- Teacher Name -->
+        <TextView
+            android:id="@+id/teacher_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:textColor="#555555" />
 
+        <!-- Time Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/subject_start"
+                android:id="@+id/start_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Start: 11:30 AM"
-                android:textAppearance="?attr/textAppearanceCaption" />
+                android:text=""
+                android:textColor="#444444"
+                android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/subject_end"
-                android:layout_width="wrap_content"
+                android:id="@+id/end_time"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="End: 12:30 AM"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:text=""
+                android:textColor="#444444"
+                android:textSize="14sp" />
         </LinearLayout>
 
+        <!-- Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="12dp">
+
+            <Button
+                android:id="@+id/btn_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit" />
+
+            <Button
+                android:id="@+id/btn_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
 
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>
