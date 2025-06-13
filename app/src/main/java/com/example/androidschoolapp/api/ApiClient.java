@@ -1,34 +1,24 @@
 package com.example.androidschoolapp.api;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.androidschoolapp.models.Class;
-import com.example.androidschoolapp.models.ClassSubject;
+import com.example.androidschoolapp.models.ClassModel;
 import com.example.androidschoolapp.models.Subject;
 import com.example.androidschoolapp.models.Task;
-import com.example.androidschoolapp.models.Test;
 import com.example.androidschoolapp.models.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -289,21 +279,21 @@ public class ApiClient {
     }
 
     // Teacher API Methods
-    public void getTeacherClasses(final DataCallback<List<Class>> callback) {
+    public void getTeacherClasses(final DataCallback<List<ClassModel>> callback) {
         makeApiRequest(Request.Method.GET, "/Classes/TeacherClasses.php", 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
                     if (response.has("Status") && response.getString("Status").equals("Success")) {
-                        List<Class> classesList = new ArrayList<>();
+                        List<ClassModel> classesList = new ArrayList<>();
                         
                         if (response.has("Classes")) {
                             JSONArray classesArray = response.getJSONArray("Classes");
                             
                             for (int i = 0; i < classesArray.length(); i++) {
                                 JSONObject classObject = classesArray.getJSONObject(i);
-                                Class classItem = new Class();
+                                ClassModel classItem = new ClassModel();
                                 
                                 classItem.setId(classObject.optInt("ID", 0));
                                 classItem.setName(classObject.optString("Name", ""));
@@ -598,21 +588,21 @@ public class ApiClient {
     // Registrar API methods
     
     // Method to get all classes
-    public void getClasses(final DataCallback<List<Class>> callback) {
+    public void getClasses(final DataCallback<List<ClassModel>> callback) {
         makeApiRequest(Request.Method.GET, "/Classes/Get.php", 
                       null, true, new ApiResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
                     if (response.has("Status") && response.getString("Status").equals("Success")) {
-                        List<Class> classesList = new ArrayList<>();
+                        List<ClassModel> classesList = new ArrayList<>();
                         
                         if (response.has("Classes")) {
                             JSONArray classesArray = response.getJSONArray("Classes");
                             
                             for (int i = 0; i < classesArray.length(); i++) {
                                 JSONObject classObject = classesArray.getJSONObject(i);
-                                Class classItem = new Class();
+                                ClassModel classItem = new ClassModel();
                                 
                                 classItem.setId(classObject.optInt("ID", 0));
                                 classItem.setName(classObject.optString("Name", ""));
@@ -640,7 +630,7 @@ public class ApiClient {
     }
     
     // Method to add a class
-    public void addClass(Class classItem, final DataCallback<String> callback) {
+    public void addClass(ClassModel classItem, final DataCallback<String> callback) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("Name", classItem.getName());
@@ -664,7 +654,7 @@ public class ApiClient {
     }
     
     // Method to edit a class
-    public void editClass(Class classItem, final DataCallback<String> callback) {
+    public void editClass(ClassModel classItem, final DataCallback<String> callback) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("Name", classItem.getName());
